@@ -704,7 +704,6 @@
 		pointer-events: auto;
 		transition: transform 0.2s ease;
 		border-radius: 10px;
-		overflow: hidden;
 		background: #000;
 	}
 
@@ -726,6 +725,7 @@
 		border-radius: 10px;
 		overflow: hidden;
 		background: #000;
+		position: relative;
 	}
 
 	.thumbnail-video-container iframe {
@@ -742,13 +742,13 @@
 		transform: translateX(-50%);
 		color: white;
 		font-size: 12px;
-		font-weight: 500;
+		font-weight: 600;
 		text-align: center;
-		text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
 		white-space: nowrap;
 		max-width: 180px;
 		overflow: hidden;
 		text-overflow: ellipsis;
+		font-family: system-ui, -apple-system, sans-serif;
 	}
 
 	/* Logo */
@@ -826,8 +826,10 @@
 
 		.thumbnail-title {
 			font-size: 11px;
+			font-weight: 600;
 			bottom: -25px;
 			max-width: 140px;
+			font-family: system-ui, -apple-system, sans-serif;
 		}
 
 		.logo-overlay {
@@ -920,8 +922,10 @@
 
 		.thumbnail-title {
 			font-size: 10px;
+			font-weight: 600;
 			bottom: -20px;
 			max-width: 100px;
+			font-family: system-ui, -apple-system, sans-serif;
 		}
 
 		.logo-overlay {
