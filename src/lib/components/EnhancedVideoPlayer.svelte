@@ -329,6 +329,15 @@
 		</div>
 	{/if}
 
+	<!-- Logo (shown when paused) -->
+	<div class="logo-overlay" class:visible={!isPlaying}>
+		<img 
+			src="https://iili.io/KjiTMH7.png" 
+			alt="Mably Logo" 
+			class="logo-image"
+		/>
+	</div>
+
 	<!-- Navigation Thumbnails (always loaded, shown when paused) -->
 	{#if allProjects.length > 1}
 		<div class="nav-thumbnails-overlay" class:visible={!isPlaying}>
@@ -729,6 +738,26 @@
 		text-overflow: ellipsis;
 	}
 
+	/* Logo */
+	.logo-overlay {
+		position: absolute;
+		top: 20px;
+		left: 20px;
+		z-index: 70;
+		opacity: 0;
+		transition: opacity 0.3s ease;
+	}
+
+	.logo-overlay.visible {
+		opacity: 1;
+	}
+
+	.logo-image {
+		height: 40px;
+		width: auto;
+		object-fit: contain;
+	}
+
 	/* Responsive design */
 	@media (max-width: 768px) {
 		.play-pause-button {
@@ -786,6 +815,15 @@
 			font-size: 11px;
 			bottom: -25px;
 			max-width: 140px;
+		}
+
+		.logo-overlay {
+			top: 15px;
+			left: 15px;
+		}
+
+		.logo-image {
+			height: 35px;
 		}
 
 		.progress-container {
@@ -871,6 +909,15 @@
 			font-size: 10px;
 			bottom: -20px;
 			max-width: 100px;
+		}
+
+		.logo-overlay {
+			top: 10px;
+			left: 10px;
+		}
+
+		.logo-image {
+			height: 30px;
 		}
 	}
 
