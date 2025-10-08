@@ -17,7 +17,6 @@
 	let showOverview = $state(false);
 	let showCredits = $state(false);
 	let isMuted = $state(true);
-	let animationFrame: number | null = null;
 
 	// Utility function to extract Vimeo video ID
 	function getVimeoVideoId(vimeoUrl: string): string {
@@ -74,28 +73,26 @@
 			// Set sound to off by default
 			player.setVolume(0);
 			isMuted = true;
-			// Start smooth progress animation since video autoplays
-			startProgressAnimation();
 		});
 
 		player.on('timeupdate', (data: any) => {
-			// Keep this for time display updates, but use smooth animation for progress
+			// Update both time and progress from Vimeo player
 			currentTime = data.seconds;
+			if (duration > 0) {
+				progress = (data.seconds / duration) * 100;
+			}
 		});
 
 		player.on('play', () => {
 			isPlaying = true;
-			startProgressAnimation();
 		});
 
 		player.on('pause', () => {
 			isPlaying = false;
-			stopProgressAnimation();
 		});
 
 		player.on('ended', () => {
 			isPlaying = false;
-			stopProgressAnimation();
 		});
 	}
 
@@ -173,11 +170,6 @@
 		const newTime = percentage * duration;
 		
 		player.setCurrentTime(newTime);
-		
-		// Restart progress animation to ensure smooth updates after seeking
-		if (isPlaying) {
-			startProgressAnimation();
-		}
 	}
 
 	// Navigation functions
@@ -208,31 +200,6 @@
 		goto(`/project/${targetProject.slug.current}`);
 	}
 
-	// Smooth progress animation
-	function animateProgress() {
-		if (player && isPlaying && duration > 0) {
-			player.getCurrentTime().then((time: number) => {
-				currentTime = time;
-				progress = (time / duration) * 100;
-			});
-		}
-		animationFrame = requestAnimationFrame(animateProgress);
-	}
-
-	// Start/stop smooth animation
-	function startProgressAnimation() {
-		if (animationFrame) {
-			cancelAnimationFrame(animationFrame);
-		}
-		animateProgress();
-	}
-
-	function stopProgressAnimation() {
-		if (animationFrame) {
-			cancelAnimationFrame(animationFrame);
-			animationFrame = null;
-		}
-	}
 
 	// Format time helper
 	function formatTime(seconds: number): string {
