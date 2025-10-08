@@ -164,6 +164,34 @@
 		player.setCurrentTime(newTime);
 	}
 
+	// Navigation functions
+	function getPreviousProject() {
+		if (!project || !allProjects.length) return null;
+		
+		const currentIndex = allProjects.findIndex(p => p._id === project._id);
+		if (currentIndex === -1) return null;
+		
+		// Get previous project (loop to last if at first)
+		const prevIndex = currentIndex === 0 ? allProjects.length - 1 : currentIndex - 1;
+		return allProjects[prevIndex];
+	}
+
+	function getNextProject() {
+		if (!project || !allProjects.length) return null;
+		
+		const currentIndex = allProjects.findIndex(p => p._id === project._id);
+		if (currentIndex === -1) return null;
+		
+		// Get next project (loop to first if at last)
+		const nextIndex = currentIndex === allProjects.length - 1 ? 0 : currentIndex + 1;
+		return allProjects[nextIndex];
+	}
+
+	function navigateToProject(targetProject: SanityProject | null) {
+		if (!targetProject) return;
+		goto(`/project/${targetProject.slug.current}`);
+	}
+
 	// Smooth progress animation
 	function animateProgress() {
 		if (player && isPlaying && duration > 0) {
@@ -262,6 +290,31 @@
 			{/if}
 		</button>
 	</div>
+
+	<!-- Navigation Arrows -->
+	{#if allProjects.length > 1}
+		<!-- Previous Project Arrow -->
+		<button 
+			class="nav-arrow nav-arrow-left" 
+			onclick={() => navigateToProject(getPreviousProject())}
+			aria-label="Previous project"
+		>
+			<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+				<path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+			</svg>
+		</button>
+
+		<!-- Next Project Arrow -->
+		<button 
+			class="nav-arrow nav-arrow-right" 
+			onclick={() => navigateToProject(getNextProject())}
+			aria-label="Next project"
+		>
+			<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+				<path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+			</svg>
+		</button>
+	{/if}
 
 	<!-- Overview Modal -->
 	{#if showOverview}
@@ -478,6 +531,41 @@
 		height: 16px;
 	}
 
+	/* Navigation Arrows */
+	.nav-arrow {
+		position: absolute;
+		top: 50%;
+		transform: translateY(-50%);
+		background: transparent;
+		border: none;
+		color: white;
+		cursor: pointer;
+		padding: 12px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		transition: opacity 0.3s ease;
+		z-index: 60;
+		opacity: 0.7;
+	}
+
+	.nav-arrow:hover {
+		opacity: 1;
+	}
+
+	.nav-arrow-left {
+		left: 20px;
+	}
+
+	.nav-arrow-right {
+		right: 20px;
+	}
+
+	.nav-arrow svg {
+		width: 72px;
+		height: 72px;
+	}
+
 	/* Responsive design */
 	@media (max-width: 768px) {
 		.play-pause-button {
@@ -499,6 +587,23 @@
 
 		.link-button {
 			font-size: 8.8px;
+		}
+
+		.nav-arrow {
+			padding: 8px;
+		}
+
+		.nav-arrow-left {
+			left: 15px;
+		}
+
+		.nav-arrow-right {
+			right: 15px;
+		}
+
+		.nav-arrow svg {
+			width: 60px;
+			height: 60px;
 		}
 
 		.progress-container {
@@ -548,6 +653,23 @@
 
 		.time-display {
 			font-size: 11px;
+		}
+
+		.nav-arrow {
+			padding: 6px;
+		}
+
+		.nav-arrow-left {
+			left: 10px;
+		}
+
+		.nav-arrow-right {
+			right: 10px;
+		}
+
+		.nav-arrow svg {
+			width: 48px;
+			height: 48px;
 		}
 	}
 
