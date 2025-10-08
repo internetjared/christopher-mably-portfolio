@@ -665,6 +665,9 @@
 		cursor: pointer;
 		pointer-events: auto;
 		transition: transform 0.2s ease;
+		border-radius: 10px;
+		overflow: hidden;
+		background: #000;
 	}
 
 	.nav-thumbnail:hover {
@@ -672,17 +675,17 @@
 	}
 
 	.nav-thumbnail-left {
-		left: 20px;
+		left: 100px; /* Position next to left arrow */
 	}
 
 	.nav-thumbnail-right {
-		right: 20px;
+		right: 100px; /* Position next to right arrow */
 	}
 
 	.thumbnail-video-container {
 		width: 100%;
 		height: 100%;
-		border-radius: 12px;
+		border-radius: 10px;
 		overflow: hidden;
 		background: #000;
 	}
@@ -756,11 +759,11 @@
 		}
 
 		.nav-thumbnail-left {
-			left: 15px;
+			left: 80px; /* Position next to left arrow */
 		}
 
 		.nav-thumbnail-right {
-			right: 15px;
+			right: 80px; /* Position next to right arrow */
 		}
 
 		.thumbnail-title {
@@ -841,11 +844,11 @@
 		}
 
 		.nav-thumbnail-left {
-			left: 10px;
+			left: 60px; /* Position next to left arrow */
 		}
 
 		.nav-thumbnail-right {
-			right: 10px;
+			right: 60px; /* Position next to right arrow */
 		}
 
 		.thumbnail-title {
