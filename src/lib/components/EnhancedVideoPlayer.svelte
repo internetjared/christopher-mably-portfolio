@@ -12,6 +12,8 @@
 	let duration = $state(0);
 	let currentTime = $state(0);
 	let progress = $state(0);
+	let lastUpdateTime = $state(0);
+	let animationFrame: number | null = null;
 	let showControls = $state(true);
 	let hideTimeout: ReturnType<typeof setTimeout> | null = null;
 	let showOverview = $state(false);
@@ -51,7 +53,7 @@
 	});
 
 	onDestroy(() => {
-		// Cleanup handled by Vimeo player
+		stopSmoothProgress();
 	});
 
 	function initializePlayer() {
@@ -76,19 +78,26 @@
 		});
 
 		player.on('timeupdate', (data: any) => {
-			// Update both time and progress from Vimeo player
+			// Store the accurate time from Vimeo and start smooth animation
+			lastUpdateTime = data.seconds;
 			currentTime = data.seconds;
 			if (duration > 0) {
 				progress = (data.seconds / duration) * 100;
+			}
+			// Start smooth animation if not already running
+			if (isPlaying && !animationFrame) {
+				startSmoothProgress();
 			}
 		});
 
 		player.on('play', () => {
 			isPlaying = true;
+			startSmoothProgress();
 		});
 
 		player.on('pause', () => {
 			isPlaying = false;
+			stopSmoothProgress();
 		});
 
 		player.on('ended', () => {
@@ -170,6 +179,11 @@
 		const newTime = percentage * duration;
 		
 		player.setCurrentTime(newTime);
+		
+		// Restart smooth animation after seeking
+		if (isPlaying) {
+			startSmoothProgress();
+		}
 	}
 
 	// Navigation functions
@@ -198,6 +212,32 @@
 	function navigateToProject(targetProject: SanityProject | null) {
 		if (!targetProject) return;
 		goto(`/project/${targetProject.slug.current}`);
+	}
+
+	// Smooth progress animation functions
+	function startSmoothProgress() {
+		if (animationFrame) {
+			cancelAnimationFrame(animationFrame);
+		}
+		animateProgress();
+	}
+
+	function stopSmoothProgress() {
+		if (animationFrame) {
+			cancelAnimationFrame(animationFrame);
+			animationFrame = null;
+		}
+	}
+
+	function animateProgress() {
+		if (player && isPlaying && duration > 0) {
+			// Get current time from player for accuracy
+			player.getCurrentTime().then((time: number) => {
+				currentTime = time;
+				progress = (time / duration) * 100;
+			});
+		}
+		animationFrame = requestAnimationFrame(animateProgress);
 	}
 
 
