@@ -5,7 +5,7 @@ import { projectSchema } from './schemas/project'
 
 export default defineConfig({
   name: 'christ-mably-cms',
-  title: 'Christ Mably CMS',
+  title: 'Christopher Mably CMS',
   
   projectId: 'cr745m4x',
   dataset: 'production',
