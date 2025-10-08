@@ -165,16 +165,21 @@
 		}
 	}
 
-	// Handle progress bar click for seeking
+	// Handle progress bar click for seeking (Canada Canada style)
 	function handleProgressClick(event: MouseEvent) {
 		if (!player || !duration) return;
 		
 		const progressBar = event.currentTarget as HTMLElement;
 		const rect = progressBar.getBoundingClientRect();
 		const clickX = event.clientX - rect.left;
-		const percentage = clickX / rect.width;
+		const percentage = Math.max(0, Math.min(1, clickX / rect.width));
 		const newTime = percentage * duration;
 		
+		// Immediate visual feedback
+		currentTime = newTime;
+		progress = percentage * 100;
+		
+		// Seek to new time
 		player.setCurrentTime(newTime);
 		
 		// Restart smooth animation after seeking
@@ -211,7 +216,7 @@
 		goto(`/project/${targetProject.slug.current}`);
 	}
 
-	// Smooth progress animation functions
+	// Ultra-smooth progress animation functions (like Canada Canada)
 	function startSmoothProgress() {
 		if (animationFrame) {
 			cancelAnimationFrame(animationFrame);
@@ -234,6 +239,7 @@
 				progress = (time / duration) * 100;
 			});
 		}
+		// Continue animation loop for ultra-smooth updates
 		animationFrame = requestAnimationFrame(animateProgress);
 	}
 
@@ -291,7 +297,7 @@
 	<!-- Progress bar with time and sound controls -->
 	<div class="progress-container" class:visible={showControls}>
 		<div class="time-display">
-			{formatTime(currentTime)} / {formatTime(duration)}
+			{formatTime(currentTime)} — {formatTime(duration)}
 		</div>
 		<div class="progress-bar" onclick={handleProgressClick}>
 			<div class="progress-fill" style="width: {progress}%"></div>
@@ -580,13 +586,19 @@
 		pointer-events: auto;
 		z-index: 51;
 		position: relative;
+		transition: height 0.2s ease;
+	}
+
+	.progress-bar:hover {
+		height: 6px;
 	}
 
 	.progress-fill {
 		height: 100%;
 		background: white;
 		border-radius: 2px;
-		transition: width 0.05s linear;
+		transition: width 0.05s ease;
+		will-change: width;
 	}
 
 	.time-display {
