@@ -34,10 +34,12 @@
 		};
 		document.head.appendChild(script);
 
-		// Hide controls after 3 seconds of inactivity
-		hideTimeout = setTimeout(() => {
-			showControls = false;
-		}, 3000);
+		// Hide controls after 3 seconds of inactivity (only if playing)
+		if (isPlaying) {
+			hideTimeout = setTimeout(() => {
+				showControls = false;
+			}, 3000);
+		}
 
 		return () => {
 			if (player) {
@@ -102,13 +104,19 @@
 		if (player) {
 			if (isPlaying) {
 				player.pause();
+				// Clear any existing timeout and keep controls visible when paused
+				if (hideTimeout) {
+					clearTimeout(hideTimeout);
+					hideTimeout = null;
+				}
+				showControls = true;
 			} else {
 				player.play();
 			}
 		}
 	}
 
-	// Show controls on mouse move and hide after 3 seconds of inactivity
+	// Show controls on mouse move and hide after 3 seconds of inactivity (only when playing)
 	function handleMouseMove() {
 		showControls = true;
 		
@@ -117,10 +125,12 @@
 			clearTimeout(hideTimeout);
 		}
 		
-		// Set new timeout to hide after 3 seconds
-		hideTimeout = setTimeout(() => {
-			showControls = false;
-		}, 3000);
+		// Only set timeout to hide if video is playing
+		if (isPlaying) {
+			hideTimeout = setTimeout(() => {
+				showControls = false;
+			}, 3000);
+		}
 	}
 
 	// Modal functions
