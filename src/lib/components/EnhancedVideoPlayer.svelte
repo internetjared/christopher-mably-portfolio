@@ -554,11 +554,11 @@
 	}
 
 	.nav-arrow-left {
-		left: 20px;
+		left: 5px;
 	}
 
 	.nav-arrow-right {
-		right: 20px;
+		right: 5px;
 	}
 
 	.nav-arrow svg {
@@ -594,11 +594,11 @@
 		}
 
 		.nav-arrow-left {
-			left: 15px;
+			left: 3px;
 		}
 
 		.nav-arrow-right {
-			right: 15px;
+			right: 3px;
 		}
 
 		.nav-arrow svg {
@@ -660,11 +660,11 @@
 		}
 
 		.nav-arrow-left {
-			left: 10px;
+			left: 2px;
 		}
 
 		.nav-arrow-right {
-			right: 10px;
+			right: 2px;
 		}
 
 		.nav-arrow svg {
