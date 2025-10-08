@@ -1,5 +1,6 @@
 import { defineConfig } from 'sanity'
 import { structureTool } from 'sanity/structure'
+import { orderableDocumentListDeskItem } from '@sanity/orderable-document-list'
 import { projectSchema } from './schemas/project'
 
 export default defineConfig({
@@ -15,14 +16,12 @@ export default defineConfig({
         S.list()
           .title('Content')
           .items([
-            S.listItem()
-              .title('Projects')
-              .child(
-                S.documentTypeList('project')
-                  .title('Projects')
-                  .filter('_type == "project"')
-                  .defaultOrdering([{ field: 'order', direction: 'asc' }])
-              ),
+            // Orderable Projects List
+            orderableDocumentListDeskItem({
+              type: 'project',
+              title: 'Projects',
+              S,
+            }),
           ]),
     }),
   ],

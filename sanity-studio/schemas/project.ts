@@ -22,12 +22,11 @@ export const projectSchema = defineType({
       validation: (Rule) => Rule.required(),
     }),
     defineField({
-      name: 'order',
-      title: 'Display Order',
-      type: 'number',
-      description: 'Order projects will appear in navigation (1, 2, 3, etc.)',
-      validation: (Rule) => Rule.min(1).integer().required(),
-      initialValue: 1,
+      name: 'orderRank',
+      title: 'Order Rank',
+      type: 'string',
+      description: 'Used for drag-and-drop ordering in Sanity Studio',
+      hidden: true, // Hide from editors - this is managed automatically
     }),
     defineField({
       name: 'thumbnail',
