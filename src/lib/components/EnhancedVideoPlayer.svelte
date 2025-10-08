@@ -173,6 +173,11 @@
 		const newTime = percentage * duration;
 		
 		player.setCurrentTime(newTime);
+		
+		// Restart progress animation to ensure smooth updates after seeking
+		if (isPlaying) {
+			startProgressAnimation();
+		}
 	}
 
 	// Navigation functions
