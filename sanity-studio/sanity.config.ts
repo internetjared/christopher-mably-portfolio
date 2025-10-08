@@ -12,7 +12,7 @@ export default defineConfig({
   
   plugins: [
     structureTool({
-      structure: (S) =>
+      structure: (S, context) =>
         S.list()
           .title('Content')
           .items([
@@ -21,6 +21,7 @@ export default defineConfig({
               type: 'project',
               title: 'Projects',
               S,
+              context,
             }),
           ]),
     }),
