@@ -753,7 +753,7 @@
 	}
 
 	.logo-image {
-		height: 40px;
+		height: 30px;
 		width: auto;
 		object-fit: contain;
 	}
@@ -823,7 +823,7 @@
 		}
 
 		.logo-image {
-			height: 35px;
+			height: 30px;
 		}
 
 		.progress-container {
