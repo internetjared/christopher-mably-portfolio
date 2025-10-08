@@ -319,6 +319,65 @@
 		</div>
 	{/if}
 
+	<!-- Navigation Thumbnails (shown when paused) -->
+	{#if allProjects.length > 1 && !isPlaying}
+		<div class="nav-thumbnails-overlay">
+			<!-- Previous Project Thumbnail -->
+			{#if getPreviousProject()}
+				{@const prevProject = getPreviousProject()}
+				{@const prevVideoId = getVimeoVideoId(prevProject.vimeoUrl)}
+				{#if prevVideoId}
+					<div 
+						class="nav-thumbnail nav-thumbnail-left"
+						onclick={() => navigateToProject(prevProject)}
+						role="button"
+						tabindex="0"
+						onkeydown={(e) => e.key === 'Enter' && navigateToProject(prevProject)}
+					>
+						<div class="thumbnail-video-container">
+							<iframe
+								src="https://player.vimeo.com/video/{prevVideoId}?autoplay=1&muted=1&loop=1&controls=0&background=1"
+								width="100%"
+								height="100%"
+								frameborder="0"
+								allow="autoplay; fullscreen; picture-in-picture"
+								allowfullscreen
+							></iframe>
+						</div>
+						<div class="thumbnail-title">{prevProject.title}</div>
+					</div>
+				{/if}
+			{/if}
+
+			<!-- Next Project Thumbnail -->
+			{#if getNextProject()}
+				{@const nextProject = getNextProject()}
+				{@const nextVideoId = getVimeoVideoId(nextProject.vimeoUrl)}
+				{#if nextVideoId}
+					<div 
+						class="nav-thumbnail nav-thumbnail-right"
+						onclick={() => navigateToProject(nextProject)}
+						role="button"
+						tabindex="0"
+						onkeydown={(e) => e.key === 'Enter' && navigateToProject(nextProject)}
+					>
+						<div class="thumbnail-video-container">
+							<iframe
+								src="https://player.vimeo.com/video/{nextVideoId}?autoplay=1&muted=1&loop=1&controls=0&background=1"
+								width="100%"
+								height="100%"
+								frameborder="0"
+								allow="autoplay; fullscreen; picture-in-picture"
+								allowfullscreen
+							></iframe>
+						</div>
+						<div class="thumbnail-title">{nextProject.title}</div>
+					</div>
+				{/if}
+			{/if}
+		</div>
+	{/if}
+
 	<!-- Overview Modal -->
 	{#if showOverview}
 		<div class="modal-overlay" onclick={closeModals}>
@@ -586,6 +645,71 @@
 		height: 72px;
 	}
 
+	/* Navigation Thumbnails */
+	.nav-thumbnails-overlay {
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		z-index: 65;
+		pointer-events: none;
+	}
+
+	.nav-thumbnail {
+		position: absolute;
+		top: 50%;
+		transform: translateY(-50%);
+		width: 200px;
+		height: 112px; /* 16:9 aspect ratio */
+		cursor: pointer;
+		pointer-events: auto;
+		transition: transform 0.2s ease;
+	}
+
+	.nav-thumbnail:hover {
+		transform: translateY(-50%) scale(1.05);
+	}
+
+	.nav-thumbnail-left {
+		left: 20px;
+	}
+
+	.nav-thumbnail-right {
+		right: 20px;
+	}
+
+	.thumbnail-video-container {
+		width: 100%;
+		height: 100%;
+		border-radius: 12px;
+		overflow: hidden;
+		background: #000;
+	}
+
+	.thumbnail-video-container iframe {
+		width: 100%;
+		height: 100%;
+		border: none;
+		pointer-events: none;
+	}
+
+	.thumbnail-title {
+		position: absolute;
+		bottom: -30px;
+		left: 50%;
+		transform: translateX(-50%);
+		color: white;
+		font-size: 12px;
+		font-weight: 500;
+		text-align: center;
+		text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+		white-space: nowrap;
+		max-width: 180px;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+
 	/* Responsive design */
 	@media (max-width: 768px) {
 		.play-pause-button {
@@ -624,6 +748,25 @@
 		.nav-arrow svg {
 			width: 60px;
 			height: 60px;
+		}
+
+		.nav-thumbnail {
+			width: 160px;
+			height: 90px; /* 16:9 aspect ratio */
+		}
+
+		.nav-thumbnail-left {
+			left: 15px;
+		}
+
+		.nav-thumbnail-right {
+			right: 15px;
+		}
+
+		.thumbnail-title {
+			font-size: 11px;
+			bottom: -25px;
+			max-width: 140px;
 		}
 
 		.progress-container {
@@ -690,6 +833,25 @@
 		.nav-arrow svg {
 			width: 48px;
 			height: 48px;
+		}
+
+		.nav-thumbnail {
+			width: 120px;
+			height: 68px; /* 16:9 aspect ratio */
+		}
+
+		.nav-thumbnail-left {
+			left: 10px;
+		}
+
+		.nav-thumbnail-right {
+			right: 10px;
+		}
+
+		.thumbnail-title {
+			font-size: 10px;
+			bottom: -20px;
+			max-width: 100px;
 		}
 	}
 
