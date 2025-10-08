@@ -390,8 +390,8 @@
 	}
 
 	.play-pause-button {
-		width: 80px;
-		height: 80px;
+		width: 100px;
+		height: 100px;
 		border: none;
 		background: transparent;
 		color: white;
@@ -569,8 +569,8 @@
 	/* Responsive design */
 	@media (max-width: 768px) {
 		.play-pause-button {
-			width: 70px;
-			height: 70px;
+			width: 85px;
+			height: 85px;
 		}
 
 		.title-overlay {
@@ -620,8 +620,8 @@
 
 	@media (max-width: 480px) {
 		.play-pause-button {
-			width: 60px;
-			height: 60px;
+			width: 70px;
+			height: 70px;
 		}
 
 		.title-overlay {
