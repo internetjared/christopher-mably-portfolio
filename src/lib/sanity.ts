@@ -1,10 +1,11 @@
 import { createClient } from '@sanity/client';
+import { env } from '$env/dynamic/public';
 
 // Sanity client configuration
 export const sanityClient = createClient({
-  projectId: 'cr745m4x',
-  dataset: 'production',
-  apiVersion: '2023-05-03',
+  projectId: env.PUBLIC_SANITY_PROJECT_ID || 'cr745m4x',
+  dataset: env.PUBLIC_SANITY_DATASET || 'production',
+  apiVersion: env.PUBLIC_SANITY_API_VERSION || '2023-05-03',
   useCdn: true,
 });
 
