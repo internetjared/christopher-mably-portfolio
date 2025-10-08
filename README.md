@@ -43,7 +43,7 @@ The homepage features a fullscreen Vimeo video player with:
 1. Clone the repository:
 ```bash
 git clone <your-repo-url>
-cd christ-mably-2
+cd christopher-mably-portfolio
 ```
 
 2. Install dependencies:
