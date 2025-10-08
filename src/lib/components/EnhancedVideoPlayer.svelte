@@ -319,9 +319,9 @@
 		</div>
 	{/if}
 
-	<!-- Navigation Thumbnails (shown when paused) -->
-	{#if allProjects.length > 1 && !isPlaying}
-		<div class="nav-thumbnails-overlay">
+	<!-- Navigation Thumbnails (always loaded, shown when paused) -->
+	{#if allProjects.length > 1}
+		<div class="nav-thumbnails-overlay" class:visible={!isPlaying}>
 			<!-- Previous Project Thumbnail -->
 			{#if getPreviousProject()}
 				{@const prevProject = getPreviousProject()}
@@ -654,6 +654,12 @@
 		bottom: 0;
 		z-index: 65;
 		pointer-events: none;
+		opacity: 0;
+		transition: opacity 0.3s ease;
+	}
+
+	.nav-thumbnails-overlay.visible {
+		opacity: 1;
 	}
 
 	.nav-thumbnail {
