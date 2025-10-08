@@ -5,12 +5,6 @@
 	// Props
 	let { project, allProjects }: { project: SanityProject | null; allProjects: SanityProject[] } = $props();
 
-	// Debug logging
-	$effect(() => {
-		console.log('Project data received:', project);
-		console.log('All projects data:', allProjects);
-	});
-
 	// State
 	let player: any = null;
 	let isPlaying = $state(true);
@@ -71,10 +65,8 @@
 
 		// Player events
 		player.on('loaded', () => {
-			console.log('Vimeo player loaded successfully');
 			player.getDuration().then((dur: number) => {
 				duration = dur;
-				console.log('Video duration:', duration);
 			});
 			// Set sound to off by default
 			player.setVolume(0);
