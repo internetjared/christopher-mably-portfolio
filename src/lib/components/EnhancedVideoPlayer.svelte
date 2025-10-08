@@ -247,12 +247,12 @@
 		<button class="play-pause-button" onclick={togglePlayPause}>
 			{#if isPlaying}
 				<!-- Pause Icon -->
-				<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+				<svg width="50" height="50" viewBox="0 0 24 24" fill="currentColor">
 					<path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z"/>
 				</svg>
 			{:else}
 				<!-- Play Icon -->
-				<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+				<svg width="50" height="50" viewBox="0 0 24 24" fill="currentColor">
 					<path d="M8 5v14l11-7z"/>
 				</svg>
 			{/if}
