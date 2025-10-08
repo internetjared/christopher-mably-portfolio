@@ -165,7 +165,7 @@
 		}
 	}
 
-	// Handle progress bar click for seeking (Canada Canada style)
+	// Handle progress bar click for seeking
 	function handleProgressClick(event: MouseEvent) {
 		if (!player || !duration) return;
 		
@@ -175,17 +175,8 @@
 		const percentage = Math.max(0, Math.min(1, clickX / rect.width));
 		const newTime = percentage * duration;
 		
-		// Immediate visual feedback
-		currentTime = newTime;
-		progress = percentage * 100;
-		
-		// Seek to new time
+		// Seek to new time - let the animation handle the visual updates
 		player.setCurrentTime(newTime);
-		
-		// Restart smooth animation after seeking
-		if (isPlaying) {
-			startSmoothProgress();
-		}
 	}
 
 	// Navigation functions
@@ -237,6 +228,8 @@
 			player.getCurrentTime().then((time: number) => {
 				currentTime = time;
 				progress = (time / duration) * 100;
+			}).catch(() => {
+				// Handle any errors gracefully
 			});
 		}
 		// Continue animation loop for ultra-smooth updates
@@ -586,11 +579,6 @@
 		pointer-events: auto;
 		z-index: 51;
 		position: relative;
-		transition: height 0.2s ease;
-	}
-
-	.progress-bar:hover {
-		height: 6px;
 	}
 
 	.progress-fill {
