@@ -173,7 +173,17 @@
 		
 		// Get previous project (loop to last if at first)
 		const prevIndex = currentIndex === 0 ? allProjects.length - 1 : currentIndex - 1;
-		return allProjects[prevIndex];
+		const prevProject = allProjects[prevIndex];
+		
+		console.log('Navigation Debug:', {
+			currentProject: project.title,
+			currentIndex,
+			allProjects: allProjects.map(p => p.title),
+			previousProject: prevProject?.title,
+			previousIndex: prevIndex
+		});
+		
+		return prevProject;
 	}
 
 	function getNextProject() {
@@ -184,7 +194,17 @@
 		
 		// Get next project (loop to first if at last)
 		const nextIndex = currentIndex === allProjects.length - 1 ? 0 : currentIndex + 1;
-		return allProjects[nextIndex];
+		const nextProject = allProjects[nextIndex];
+		
+		console.log('Navigation Debug:', {
+			currentProject: project.title,
+			currentIndex,
+			allProjects: allProjects.map(p => p.title),
+			nextProject: nextProject?.title,
+			nextIndex
+		});
+		
+		return nextProject;
 	}
 
 	function navigateToProject(targetProject: SanityProject | null) {
