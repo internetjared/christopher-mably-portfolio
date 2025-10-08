@@ -127,12 +127,11 @@ export const projectSchema = defineType({
       title: 'title',
       media: 'thumbnail',
       subtitle: 'overview',
-      order: 'order',
     },
     prepare(selection) {
-      const { title, media, subtitle, order } = selection
+      const { title, media, subtitle } = selection
       return {
-        title: `#${order || '?'} - ${title}`,
+        title: title,
         media: media,
         subtitle: subtitle ? subtitle.substring(0, 100) + '...' : 'No overview',
       }
