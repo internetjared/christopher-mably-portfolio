@@ -75,19 +75,15 @@
 			// Set sound to off by default
 			player.setVolume(0);
 			isMuted = true;
+			// Start smooth progress animation since video autoplays
+			if (isPlaying) {
+				startSmoothProgress();
+			}
 		});
 
 		player.on('timeupdate', (data: any) => {
-			// Store the accurate time from Vimeo and start smooth animation
+			// Store the accurate time from Vimeo for reference
 			lastUpdateTime = data.seconds;
-			currentTime = data.seconds;
-			if (duration > 0) {
-				progress = (data.seconds / duration) * 100;
-			}
-			// Start smooth animation if not already running
-			if (isPlaying && !animationFrame) {
-				startSmoothProgress();
-			}
 		});
 
 		player.on('play', () => {
@@ -102,6 +98,7 @@
 
 		player.on('ended', () => {
 			isPlaying = false;
+			stopSmoothProgress();
 		});
 	}
 
