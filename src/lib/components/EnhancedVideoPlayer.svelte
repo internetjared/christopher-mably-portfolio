@@ -51,7 +51,7 @@
 	});
 
 	onDestroy(() => {
-		stopProgressAnimation();
+		// Cleanup handled by Vimeo player
 	});
 
 	function initializePlayer() {
@@ -314,8 +314,9 @@
 	{#if allProjects.length > 1}
 		<div class="nav-thumbnails-overlay" class:visible={!isPlaying}>
 			<!-- Previous Project Thumbnail -->
-			{#if getPreviousProject()}
-				{@const prevProject = getPreviousProject()}
+		{#if getPreviousProject()}
+			{@const prevProject = getPreviousProject()}
+			{#if prevProject}
 				{@const prevVideoId = getVimeoVideoId(prevProject.vimeoUrl)}
 				{#if prevVideoId}
 					<div 
@@ -339,10 +340,12 @@
 					</div>
 				{/if}
 			{/if}
+		{/if}
 
-			<!-- Next Project Thumbnail -->
-			{#if getNextProject()}
-				{@const nextProject = getNextProject()}
+		<!-- Next Project Thumbnail -->
+		{#if getNextProject()}
+			{@const nextProject = getNextProject()}
+			{#if nextProject}
 				{@const nextVideoId = getVimeoVideoId(nextProject.vimeoUrl)}
 				{#if nextVideoId}
 					<div 
@@ -366,6 +369,7 @@
 					</div>
 				{/if}
 			{/if}
+		{/if}
 		</div>
 	{/if}
 
