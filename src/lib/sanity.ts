@@ -9,14 +9,15 @@ export const sanityClient = createClient({
   useCdn: true,
 });
 
-// Simple project query
-const PROJECTS_QUERY = `*[_type == "project"] | order(order asc) {
+// Simple project query - using orderRank for drag-and-drop ordering
+const PROJECTS_QUERY = `*[_type == "project"] | order(orderRank asc) {
   _id,
   title,
   slug,
   vimeoUrl,
   overview,
-  credits
+  credits,
+  orderRank
 }`;
 
 // Get all projects
@@ -38,7 +39,8 @@ export async function getProjectBySlug(slug: string) {
       slug,
       vimeoUrl,
       overview,
-      credits
+      credits,
+      orderRank
     }`;
     return await sanityClient.fetch(query, { slug });
   } catch (error) {

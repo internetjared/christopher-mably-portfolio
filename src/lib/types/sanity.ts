@@ -8,4 +8,5 @@ export interface SanityProject {
   vimeoUrl: string;
   overview?: string;
   credits?: string;
+  orderRank?: string;
 }
