@@ -293,27 +293,29 @@
 
 	<!-- Navigation Arrows -->
 	{#if allProjects.length > 1}
-		<!-- Previous Project Arrow -->
-		<button 
-			class="nav-arrow nav-arrow-left" 
-			onclick={() => navigateToProject(getPreviousProject())}
-			aria-label="Previous project"
-		>
-			<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.8" stroke-linecap="round" stroke-linejoin="round">
-				<path d="M15 18l-6-6 6-6"/>
-			</svg>
-		</button>
+		<div class="nav-arrows-overlay" class:visible={showControls}>
+			<!-- Previous Project Arrow -->
+			<button 
+				class="nav-arrow nav-arrow-left" 
+				onclick={() => navigateToProject(getPreviousProject())}
+				aria-label="Previous project"
+			>
+				<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.8" stroke-linecap="round" stroke-linejoin="round">
+					<path d="M15 18l-6-6 6-6"/>
+				</svg>
+			</button>
 
-		<!-- Next Project Arrow -->
-		<button 
-			class="nav-arrow nav-arrow-right" 
-			onclick={() => navigateToProject(getNextProject())}
-			aria-label="Next project"
-		>
-			<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.8" stroke-linecap="round" stroke-linejoin="round">
-				<path d="M9 18l6-6-6-6"/>
-			</svg>
-		</button>
+			<!-- Next Project Arrow -->
+			<button 
+				class="nav-arrow nav-arrow-right" 
+				onclick={() => navigateToProject(getNextProject())}
+				aria-label="Next project"
+			>
+				<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.8" stroke-linecap="round" stroke-linejoin="round">
+					<path d="M9 18l6-6-6-6"/>
+				</svg>
+			</button>
+		</div>
 	{/if}
 
 	<!-- Overview Modal -->
@@ -532,6 +534,22 @@
 	}
 
 	/* Navigation Arrows */
+	.nav-arrows-overlay {
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		z-index: 60;
+		pointer-events: none;
+		opacity: 0;
+		transition: opacity 0.3s ease;
+	}
+
+	.nav-arrows-overlay.visible {
+		opacity: 1;
+	}
+
 	.nav-arrow {
 		position: absolute;
 		top: 50%;
@@ -547,6 +565,7 @@
 		transition: opacity 0.3s ease;
 		z-index: 60;
 		opacity: 0.7;
+		pointer-events: auto;
 	}
 
 	.nav-arrow:hover {
