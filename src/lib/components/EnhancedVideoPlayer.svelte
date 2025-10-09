@@ -64,6 +64,13 @@
 		// Update previous project ID
 		previousProjectId = project?._id || null;
 		
+		// Set up new hide timeout for the new project
+		if (isPlaying) {
+			hideTimeout = setTimeout(() => {
+				showControls = false;
+			}, 3000);
+		}
+		
 		// Reinitialize player for new project
 		if (typeof window !== 'undefined' && (window as any).Vimeo) {
 			// Small delay to ensure DOM is updated
@@ -74,18 +81,24 @@
 		}
 	}
 
-	// Manual project change detection - will be called from onMount
-	let lastCheckedProjectId = $state<string | null>(null);
+	// Track project changes manually
+	let lastProjectId = $state<string | null>(null);
+
+	// Function to check for project changes - call this from template
+	function checkProjectChange() {
+		const currentProjectId = project?._id;
+		if (currentProjectId && currentProjectId !== lastProjectId) {
+			console.log('Project changed from', lastProjectId, 'to', currentProjectId);
+			resetStateForNewProject();
+			lastProjectId = currentProjectId;
+		}
+	}
+
+	// Call checkProjectChange whenever the component updates
+	checkProjectChange();
 
 	// Load Vimeo Player API
 	onMount(() => {
-		// Check if project has changed
-		if (project && project._id !== lastCheckedProjectId) {
-			console.log('Project changed from', lastCheckedProjectId, 'to', project._id);
-			resetStateForNewProject();
-			lastCheckedProjectId = project._id;
-		}
-
 		const script = document.createElement('script');
 		script.src = 'https://player.vimeo.com/api/player.js';
 		script.onload = () => {
