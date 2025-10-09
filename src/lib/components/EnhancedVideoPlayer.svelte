@@ -27,7 +27,11 @@
 		return match ? match[1] : '';
 	}
 
-	// Function to reset state when project changes
+
+	// Track project changes manually
+	let lastProjectId = $state<string | null>(null);
+
+	// Function to reset state for new project
 	function resetStateForNewProject() {
 		console.log('Resetting state for new project:', project?._id);
 		
@@ -81,24 +85,8 @@
 		}
 	}
 
-	// Track project changes manually
-	let lastProjectId = $state<string | null>(null);
-
-	// Function to check for project changes
-	function checkProjectChange() {
-		const currentProjectId = project?._id;
-		if (currentProjectId && currentProjectId !== lastProjectId) {
-			console.log('Project changed from', lastProjectId, 'to', currentProjectId);
-			resetStateForNewProject();
-			lastProjectId = currentProjectId;
-		}
-	}
-
 	// Load Vimeo Player API
 	onMount(() => {
-		// Check for project changes on mount
-		checkProjectChange();
-
 		const script = document.createElement('script');
 		script.src = 'https://player.vimeo.com/api/player.js';
 		script.onload = () => {
@@ -129,6 +117,13 @@
 
 	function initializePlayer() {
 		console.log('Initializing player for project:', project?._id);
+		
+		// Check if project has changed
+		if (project?._id && project._id !== lastProjectId) {
+			console.log('Project changed from', lastProjectId, 'to', project._id);
+			resetStateForNewProject();
+			lastProjectId = project._id;
+		}
 		
 		if (!project?.vimeoUrl) {
 			console.warn('No vimeoUrl for project:', project);
@@ -365,7 +360,6 @@
 <div class="video-player-container" class:modal-open={showOverview || showCredits} onmousemove={handleMouseMove}>
 	{#if project?.vimeoUrl}
 		{@const videoId = getVimeoVideoId(project.vimeoUrl)}
-		{@const _ = checkProjectChange()}
 		{#if videoId}
 			<iframe
 				id="vimeo-player"
