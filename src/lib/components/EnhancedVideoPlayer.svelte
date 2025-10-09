@@ -1,11 +1,10 @@
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
-	import { goto } from '$app/navigation';
 	import type { SanityProject } from '$lib/types/sanity';
-
+	
 	// Props
-	let { project, allProjects }: { project: SanityProject | null; allProjects: SanityProject[] } = $props();
-
+	let { project }: { project: SanityProject | null } = $props();
+	
 	// State
 	let player: any = null;
 	let isPlaying = $state(true);
@@ -19,7 +18,6 @@
 	let showOverview = $state(false);
 	let showCredits = $state(false);
 	let isMuted = $state(true);
-	let previousProjectId = $state<string | null>(null);
 
 	// Utility function to extract Vimeo video ID
 	function getVimeoVideoId(vimeoUrl: string): string {
@@ -28,77 +26,13 @@
 	}
 
 
-	// Track project changes manually
-	let lastProjectId = $state<string | null>(null);
 
-	// Function to check for project changes
-	function checkProjectChange() {
-		const currentProjectId = project?._id;
-		if (currentProjectId && currentProjectId !== lastProjectId) {
-			console.log('Project changed from', lastProjectId, 'to', currentProjectId);
-			resetStateForNewProject();
-			lastProjectId = currentProjectId;
-			
-			// Reinitialize player if Vimeo is available
-			if (typeof window !== 'undefined' && (window as any).Vimeo) {
-				setTimeout(() => {
-					initializePlayer();
-				}, 200);
-			}
-		}
-	}
-
-	// Function to reset state for new project
-	function resetStateForNewProject() {
-		console.log('Resetting state for new project:', project?._id);
-		
-		// Destroy existing player first
-		if (player) {
-			try {
-				player.destroy();
-			} catch (error) {
-				console.warn('Error destroying player:', error);
-			}
-			player = null;
-		}
-		
-		// Reset all state when project changes
-		isPlaying = true;
-		showControls = true;
-		showOverview = false;
-		showCredits = false;
-		duration = 0;
-		currentTime = 0;
-		progress = 0;
-		lastUpdateTime = 0;
-		isMuted = true;
-		
-		// Clear any existing timeouts
-		if (hideTimeout) {
-			clearTimeout(hideTimeout);
-			hideTimeout = null;
-		}
-		
-		// Stop any existing animation
-		stopSmoothProgress();
-		
-		// Update previous project ID
-		previousProjectId = project?._id || null;
-		
-		// Set up new hide timeout for the new project
-		if (isPlaying) {
-			hideTimeout = setTimeout(() => {
-				showControls = false;
-			}, 3000);
-		}
-	}
-
-	// Load Vimeo Player API
+		// Load Vimeo Player API
 	onMount(() => {
 		const script = document.createElement('script');
 		script.src = 'https://player.vimeo.com/api/player.js';
 		script.onload = () => {
-			initializePlayer();
+				initializePlayer();
 		};
 		document.head.appendChild(script);
 
@@ -163,8 +97,8 @@
 
 		// Player events
 		player.on('loaded', () => {
-			player.getDuration().then((dur: number) => {
-				duration = dur;
+					player.getDuration().then((dur: number) => {
+						duration = dur;
 			});
 			// Set sound to off by default
 			player.setVolume(0);
@@ -180,18 +114,18 @@
 			lastUpdateTime = data.seconds;
 		});
 
-		player.on('play', () => {
-			isPlaying = true;
-			startSmoothProgress();
-		});
+				player.on('play', () => {
+					isPlaying = true;
+					startSmoothProgress();
+				});
 
-		player.on('pause', () => {
-			isPlaying = false;
-			stopSmoothProgress();
-		});
+				player.on('pause', () => {
+					isPlaying = false;
+					stopSmoothProgress();
+				});
 
-		player.on('ended', () => {
-			isPlaying = false;
+				player.on('ended', () => {
+					isPlaying = false;
 			stopSmoothProgress();
 		});
 	}
@@ -203,8 +137,8 @@
 			return;
 		}
 		
-		try {
-			if (isPlaying) {
+			try {
+				if (isPlaying) {
 				player.pause();
 				// Clear any existing timeout and keep controls visible when paused
 				if (hideTimeout) {
@@ -212,10 +146,10 @@
 					hideTimeout = null;
 				}
 				showControls = true;
-			} else {
+				} else {
 				player.play();
-			}
-		} catch (error) {
+				}
+			} catch (error) {
 			console.error('Error toggling play/pause:', error);
 			// Try to reinitialize player if there's an error
 			setTimeout(() => {
@@ -281,44 +215,9 @@
 		const newTime = percentage * duration;
 		
 		// Seek to new time - let the animation handle the visual updates
-		player.setCurrentTime(newTime);
+			player.setCurrentTime(newTime);
 	}
 
-	// Navigation functions
-	function getPreviousProject() {
-		if (!project || !allProjects.length) return null;
-		
-		const currentIndex = allProjects.findIndex(p => p._id === project._id);
-		if (currentIndex === -1) return null;
-		
-		// Get previous project (loop to last if at first)
-		const prevIndex = currentIndex === 0 ? allProjects.length - 1 : currentIndex - 1;
-		return allProjects[prevIndex];
-	}
-
-	function getNextProject() {
-		if (!project || !allProjects.length) return null;
-		
-		const currentIndex = allProjects.findIndex(p => p._id === project._id);
-		if (currentIndex === -1) return null;
-		
-		// Get next project (loop to first if at last)
-		const nextIndex = currentIndex === allProjects.length - 1 ? 0 : currentIndex + 1;
-		return allProjects[nextIndex];
-	}
-
-	function navigateToProject(targetProject: SanityProject | null) {
-		if (!targetProject) {
-			console.warn('No target project provided for navigation');
-			return;
-		}
-		
-		try {
-			goto(`/project/${targetProject.slug.current}`);
-		} catch (error) {
-			console.error('Error navigating to project:', error);
-		}
-	}
 
 	// Ultra-smooth progress animation functions (like Canada Canada)
 	function startSmoothProgress() {
@@ -361,17 +260,16 @@
 <div class="video-player-container" class:modal-open={showOverview || showCredits} onmousemove={handleMouseMove}>
 	{#if project?.vimeoUrl}
 		{@const videoId = getVimeoVideoId(project.vimeoUrl)}
-		{@const _ = checkProjectChange()}
 		{#if videoId}
-			<iframe
+		<iframe
 				id="vimeo-player"
 				src="https://player.vimeo.com/video/{videoId}?autoplay=1&muted=1&loop=0&controls=0&background=1"
 				width="100%"
 				height="100%"
-				frameborder="0"
-				allow="autoplay; fullscreen; picture-in-picture"
-				allowfullscreen
-			></iframe>
+			frameborder="0"
+			allow="autoplay; fullscreen; picture-in-picture"
+			allowfullscreen
+		></iframe>
 		{/if}
 	{/if}
 
@@ -398,8 +296,8 @@
 		<div class="links-container">
 			<button class="link-button" onclick={openOverview}>OVERVIEW</button>
 			<button class="link-button" onclick={openCredits}>CREDITS</button>
-		</div>
 	</div>
+					</div>
 
 	<!-- Progress bar with time and sound controls -->
 	<div class="progress-container" class:visible={showControls}>
@@ -408,7 +306,7 @@
 		</div>
 		<div class="progress-bar" onclick={handleProgressClick}>
 			<div class="progress-fill" style="width: {progress}%"></div>
-		</div>
+	</div>
 		<button class="sound-button" onclick={toggleSound}>
 			{#if isMuted}
 				<!-- Muted Icon -->
@@ -424,32 +322,6 @@
 		</button>
 	</div>
 
-	<!-- Navigation Arrows -->
-	{#if allProjects.length > 1}
-		<div class="nav-arrows-overlay" class:visible={showControls}>
-			<!-- Previous Project Arrow -->
-			<button 
-				class="nav-arrow nav-arrow-left" 
-				onclick={() => navigateToProject(getPreviousProject())}
-				aria-label="Previous project"
-			>
-				<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.8" stroke-linecap="round" stroke-linejoin="round">
-					<path d="M15 18l-6-6 6-6"/>
-				</svg>
-			</button>
-
-			<!-- Next Project Arrow -->
-			<button 
-				class="nav-arrow nav-arrow-right" 
-				onclick={() => navigateToProject(getNextProject())}
-				aria-label="Next project"
-			>
-				<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.8" stroke-linecap="round" stroke-linejoin="round">
-					<path d="M9 18l6-6-6-6"/>
-				</svg>
-			</button>
-		</div>
-	{/if}
 
 	<!-- Logo (shown when paused) -->
 	<div class="logo-overlay" class:visible={!isPlaying}>
@@ -458,70 +330,8 @@
 			alt="Mably Logo" 
 			class="logo-image"
 		/>
-	</div>
+				</div>
 
-	<!-- Navigation Thumbnails (always loaded, shown when paused) -->
-	{#if allProjects.length > 1}
-		<div class="nav-thumbnails-overlay" class:visible={!isPlaying}>
-			<!-- Previous Project Thumbnail -->
-		{#if getPreviousProject()}
-			{@const prevProject = getPreviousProject()}
-			{#if prevProject}
-				{@const prevVideoId = getVimeoVideoId(prevProject.vimeoUrl)}
-				{#if prevVideoId}
-					<div 
-						class="nav-thumbnail nav-thumbnail-left"
-						onclick={() => navigateToProject(prevProject)}
-						role="button"
-						tabindex="0"
-						onkeydown={(e) => e.key === 'Enter' && navigateToProject(prevProject)}
-					>
-						<div class="thumbnail-video-container">
-							<iframe
-								src="https://player.vimeo.com/video/{prevVideoId}?autoplay=1&muted=1&loop=1&controls=0&background=1"
-								width="100%"
-								height="100%"
-								frameborder="0"
-								allow="autoplay; fullscreen; picture-in-picture"
-								allowfullscreen
-							></iframe>
-						</div>
-						<div class="thumbnail-title">{prevProject.title}</div>
-					</div>
-				{/if}
-			{/if}
-		{/if}
-
-		<!-- Next Project Thumbnail -->
-		{#if getNextProject()}
-			{@const nextProject = getNextProject()}
-			{#if nextProject}
-				{@const nextVideoId = getVimeoVideoId(nextProject.vimeoUrl)}
-				{#if nextVideoId}
-					<div 
-						class="nav-thumbnail nav-thumbnail-right"
-						onclick={() => navigateToProject(nextProject)}
-						role="button"
-						tabindex="0"
-						onkeydown={(e) => e.key === 'Enter' && navigateToProject(nextProject)}
-					>
-						<div class="thumbnail-video-container">
-							<iframe
-								src="https://player.vimeo.com/video/{nextVideoId}?autoplay=1&muted=1&loop=1&controls=0&background=1"
-								width="100%"
-								height="100%"
-								frameborder="0"
-								allow="autoplay; fullscreen; picture-in-picture"
-								allowfullscreen
-							></iframe>
-						</div>
-						<div class="thumbnail-title">{nextProject.title}</div>
-					</div>
-				{/if}
-			{/if}
-		{/if}
-		</div>
-	{/if}
 
 	<!-- Overview Modal -->
 	{#if showOverview}
@@ -532,10 +342,10 @@
 				</div>
 				<button class="close-button" onclick={closeModals}>
 					<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-						<path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
-					</svg>
-				</button>
-			</div>
+					<path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+				</svg>
+			</button>
+		</div>
 		</div>
 	{/if}
 
@@ -545,12 +355,12 @@
 			<div class="modal-content" onclick={(e) => e.stopPropagation()}>
 				<div class="modal-text">
 					{project?.credits || 'No credits available.'}
-				</div>
+			</div>
 				<button class="close-button" onclick={closeModals}>
 					<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-						<path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
-					</svg>
-				</button>
+					<path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+				</svg>
+			</button>
 			</div>
 		</div>
 	{/if}
@@ -739,131 +549,7 @@
 		height: 16px;
 	}
 
-	/* Navigation Arrows */
-	.nav-arrows-overlay {
-		position: absolute;
-		top: 0;
-		left: 0;
-		right: 0;
-		bottom: 0;
-		z-index: 60;
-		pointer-events: none;
-		opacity: 0;
-		transition: opacity 0.3s ease;
-	}
 
-	.nav-arrows-overlay.visible {
-		opacity: 1;
-	}
-
-	.nav-arrow {
-		position: absolute;
-		top: 50%;
-		transform: translateY(-50%);
-		background: transparent;
-		border: none;
-		color: white;
-		cursor: pointer;
-		padding: 12px;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		transition: opacity 0.3s ease;
-		z-index: 60;
-		opacity: 0.7;
-		pointer-events: auto;
-	}
-
-	.nav-arrow:hover {
-		opacity: 1;
-	}
-
-	.nav-arrow-left {
-		left: 5px;
-	}
-
-	.nav-arrow-right {
-		right: 5px;
-	}
-
-	.nav-arrow svg {
-		width: 72px;
-		height: 72px;
-	}
-
-	/* Navigation Thumbnails */
-	.nav-thumbnails-overlay {
-		position: absolute;
-		top: 0;
-		left: 0;
-		right: 0;
-		bottom: 0;
-		z-index: 65;
-		pointer-events: none;
-		opacity: 0;
-		transition: opacity 0.3s ease;
-	}
-
-	.nav-thumbnails-overlay.visible {
-		opacity: 1;
-	}
-
-	.nav-thumbnail {
-		position: absolute;
-		top: 50%;
-		transform: translateY(-50%);
-		width: 200px;
-		height: 112px; /* 16:9 aspect ratio */
-		cursor: pointer;
-		pointer-events: auto;
-		transition: transform 0.2s ease;
-		border-radius: 10px;
-		background: #000;
-	}
-
-	.nav-thumbnail:hover {
-		transform: translateY(-50%) scale(1.05);
-	}
-
-	.nav-thumbnail-left {
-		left: 100px; /* Position next to left arrow */
-	}
-
-	.nav-thumbnail-right {
-		right: 100px; /* Position next to right arrow */
-	}
-
-	.thumbnail-video-container {
-		width: 100%;
-		height: 100%;
-		border-radius: 10px;
-		overflow: hidden;
-		background: #000;
-		position: relative;
-	}
-
-	.thumbnail-video-container iframe {
-		width: 100%;
-		height: 100%;
-		border: none;
-		pointer-events: none;
-	}
-
-	.thumbnail-title {
-		position: absolute;
-		bottom: -30px;
-		left: 50%;
-		transform: translateX(-50%);
-		color: white;
-		font-size: 12px;
-		font-weight: 600;
-		text-align: center;
-		white-space: nowrap;
-		max-width: 180px;
-		overflow: hidden;
-		text-overflow: ellipsis;
-		font-family: system-ui, -apple-system, sans-serif;
-	}
 
 	/* Logo */
 	.logo-overlay {
@@ -908,43 +594,6 @@
 			font-size: 8.8px;
 		}
 
-		.nav-arrow {
-			padding: 8px;
-		}
-
-		.nav-arrow-left {
-			left: 3px;
-		}
-
-		.nav-arrow-right {
-			right: 3px;
-		}
-
-		.nav-arrow svg {
-			width: 60px;
-			height: 60px;
-		}
-
-		.nav-thumbnail {
-			width: 160px;
-			height: 90px; /* 16:9 aspect ratio */
-		}
-
-		.nav-thumbnail-left {
-			left: 80px; /* Position next to left arrow */
-		}
-
-		.nav-thumbnail-right {
-			right: 80px; /* Position next to right arrow */
-		}
-
-		.thumbnail-title {
-			font-size: 11px;
-			font-weight: 600;
-			bottom: -25px;
-			max-width: 140px;
-			font-family: system-ui, -apple-system, sans-serif;
-		}
 
 		.logo-overlay {
 			top: 15px;
@@ -1004,43 +653,6 @@
 			font-size: 11px;
 		}
 
-		.nav-arrow {
-			padding: 6px;
-		}
-
-		.nav-arrow-left {
-			left: 2px;
-		}
-
-		.nav-arrow-right {
-			right: 2px;
-		}
-
-		.nav-arrow svg {
-			width: 48px;
-			height: 48px;
-		}
-
-		.nav-thumbnail {
-			width: 120px;
-			height: 68px; /* 16:9 aspect ratio */
-		}
-
-		.nav-thumbnail-left {
-			left: 60px; /* Position next to left arrow */
-		}
-
-		.nav-thumbnail-right {
-			right: 60px; /* Position next to right arrow */
-		}
-
-		.thumbnail-title {
-			font-size: 10px;
-			font-weight: 600;
-			bottom: -20px;
-			max-width: 100px;
-			font-family: system-ui, -apple-system, sans-serif;
-		}
 
 		.logo-overlay {
 			top: 10px;
