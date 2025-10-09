@@ -19,6 +19,7 @@
 	let showOverview = $state(false);
 	let showCredits = $state(false);
 	let isMuted = $state(true);
+	let previousProjectId = $state<string | null>(null);
 
 	// Utility function to extract Vimeo video ID
 	function getVimeoVideoId(vimeoUrl: string): string {
@@ -26,8 +27,47 @@
 		return match ? match[1] : '';
 	}
 
+	// Function to reset state when project changes
+	function resetStateForNewProject() {
+		// Reset all state when project changes
+		isPlaying = true;
+		showControls = true;
+		showOverview = false;
+		showCredits = false;
+		duration = 0;
+		currentTime = 0;
+		progress = 0;
+		lastUpdateTime = 0;
+		isMuted = true;
+		
+		// Clear any existing timeouts
+		if (hideTimeout) {
+			clearTimeout(hideTimeout);
+			hideTimeout = null;
+		}
+		
+		// Stop any existing animation
+		stopSmoothProgress();
+		
+		// Update previous project ID
+		previousProjectId = project?._id || null;
+		
+		// Reinitialize player for new project
+		if (typeof window !== 'undefined' && (window as any).Vimeo) {
+			// Small delay to ensure DOM is updated
+			setTimeout(() => {
+				initializePlayer();
+			}, 100);
+		}
+	}
+
 	// Load Vimeo Player API
 	onMount(() => {
+		// Check if this is a new project and reset state if needed
+		if (project && project._id !== previousProjectId) {
+			resetStateForNewProject();
+		}
+
 		const script = document.createElement('script');
 		script.src = 'https://player.vimeo.com/api/player.js';
 		script.onload = () => {
@@ -64,6 +104,12 @@
 
 		const iframe = document.getElementById('vimeo-player') as HTMLIFrameElement;
 		if (!iframe) return;
+
+		// Clean up existing player before creating new one
+		if (player) {
+			player.destroy();
+			player = null;
+		}
 
 		player = new (window as any).Vimeo.Player(iframe);
 
@@ -104,7 +150,12 @@
 
 	// Toggle play/pause
 	function togglePlayPause() {
-		if (player) {
+		if (!player) {
+			console.warn('Player not initialized yet');
+			return;
+		}
+		
+		try {
 			if (isPlaying) {
 				player.pause();
 				// Clear any existing timeout and keep controls visible when paused
@@ -116,6 +167,12 @@
 			} else {
 				player.play();
 			}
+		} catch (error) {
+			console.error('Error toggling play/pause:', error);
+			// Try to reinitialize player if there's an error
+			setTimeout(() => {
+				initializePlayer();
+			}, 100);
 		}
 	}
 
@@ -203,8 +260,16 @@
 	}
 
 	function navigateToProject(targetProject: SanityProject | null) {
-		if (!targetProject) return;
-		goto(`/project/${targetProject.slug.current}`);
+		if (!targetProject) {
+			console.warn('No target project provided for navigation');
+			return;
+		}
+		
+		try {
+			goto(`/project/${targetProject.slug.current}`);
+		} catch (error) {
+			console.error('Error navigating to project:', error);
+		}
 	}
 
 	// Ultra-smooth progress animation functions (like Canada Canada)
