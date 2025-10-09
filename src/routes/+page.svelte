@@ -6,7 +6,7 @@
 </script>
 
 <svelte:head>
-	<title>Video Player</title>
+	<title>Christopher Mably Portfolio</title>
 </svelte:head>
 
 <main>
