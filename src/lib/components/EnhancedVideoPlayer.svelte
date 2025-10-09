@@ -84,8 +84,21 @@
 	// Track project changes manually
 	let lastProjectId = $state<string | null>(null);
 
+	// Function to check for project changes
+	function checkProjectChange() {
+		const currentProjectId = project?._id;
+		if (currentProjectId && currentProjectId !== lastProjectId) {
+			console.log('Project changed from', lastProjectId, 'to', currentProjectId);
+			resetStateForNewProject();
+			lastProjectId = currentProjectId;
+		}
+	}
+
 	// Load Vimeo Player API
 	onMount(() => {
+		// Check for project changes on mount
+		checkProjectChange();
+
 		const script = document.createElement('script');
 		script.src = 'https://player.vimeo.com/api/player.js';
 		script.onload = () => {
@@ -350,14 +363,9 @@
 </script>
 
 <div class="video-player-container" class:modal-open={showOverview || showCredits} onmousemove={handleMouseMove}>
-	{@const currentProjectId = project?._id}
-	{@const _ = currentProjectId && currentProjectId !== lastProjectId && (() => {
-		console.log('Project changed from', lastProjectId, 'to', currentProjectId);
-		resetStateForNewProject();
-		lastProjectId = currentProjectId;
-	})()}
 	{#if project?.vimeoUrl}
 		{@const videoId = getVimeoVideoId(project.vimeoUrl)}
+		{@const _ = checkProjectChange()}
 		{#if videoId}
 			<iframe
 				id="vimeo-player"
