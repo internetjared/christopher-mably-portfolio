@@ -84,19 +84,6 @@
 	// Track project changes manually
 	let lastProjectId = $state<string | null>(null);
 
-	// Function to check for project changes - call this from template
-	function checkProjectChange() {
-		const currentProjectId = project?._id;
-		if (currentProjectId && currentProjectId !== lastProjectId) {
-			console.log('Project changed from', lastProjectId, 'to', currentProjectId);
-			resetStateForNewProject();
-			lastProjectId = currentProjectId;
-		}
-	}
-
-	// Call checkProjectChange whenever the component updates
-	checkProjectChange();
-
 	// Load Vimeo Player API
 	onMount(() => {
 		const script = document.createElement('script');
@@ -363,6 +350,12 @@
 </script>
 
 <div class="video-player-container" class:modal-open={showOverview || showCredits} onmousemove={handleMouseMove}>
+	{@const currentProjectId = project?._id}
+	{@const _ = currentProjectId && currentProjectId !== lastProjectId && (() => {
+		console.log('Project changed from', lastProjectId, 'to', currentProjectId);
+		resetStateForNewProject();
+		lastProjectId = currentProjectId;
+	})()}
 	{#if project?.vimeoUrl}
 		{@const videoId = getVimeoVideoId(project.vimeoUrl)}
 		{#if videoId}
