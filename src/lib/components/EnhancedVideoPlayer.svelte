@@ -29,6 +29,18 @@
 
 	// Function to reset state when project changes
 	function resetStateForNewProject() {
+		console.log('Resetting state for new project:', project?._id);
+		
+		// Destroy existing player first
+		if (player) {
+			try {
+				player.destroy();
+			} catch (error) {
+				console.warn('Error destroying player:', error);
+			}
+			player = null;
+		}
+		
 		// Reset all state when project changes
 		isPlaying = true;
 		showControls = true;
@@ -56,18 +68,20 @@
 		if (typeof window !== 'undefined' && (window as any).Vimeo) {
 			// Small delay to ensure DOM is updated
 			setTimeout(() => {
+				console.log('Reinitializing player for project:', project?._id);
 				initializePlayer();
-			}, 100);
+			}, 200);
 		}
+	}
+
+	// Reactive statement to handle project changes
+	$: if (project && project._id !== previousProjectId) {
+		console.log('Project changed from', previousProjectId, 'to', project._id);
+		resetStateForNewProject();
 	}
 
 	// Load Vimeo Player API
 	onMount(() => {
-		// Check if this is a new project and reset state if needed
-		if (project && project._id !== previousProjectId) {
-			resetStateForNewProject();
-		}
-
 		const script = document.createElement('script');
 		script.src = 'https://player.vimeo.com/api/player.js';
 		script.onload = () => {
@@ -97,21 +111,42 @@
 	});
 
 	function initializePlayer() {
-		if (!project?.vimeoUrl) return;
+		console.log('Initializing player for project:', project?._id);
+		
+		if (!project?.vimeoUrl) {
+			console.warn('No vimeoUrl for project:', project);
+			return;
+		}
 
 		const videoId = getVimeoVideoId(project.vimeoUrl);
-		if (!videoId) return;
+		if (!videoId) {
+			console.warn('No video ID found for URL:', project.vimeoUrl);
+			return;
+		}
 
 		const iframe = document.getElementById('vimeo-player') as HTMLIFrameElement;
-		if (!iframe) return;
+		if (!iframe) {
+			console.warn('Vimeo iframe not found');
+			return;
+		}
 
 		// Clean up existing player before creating new one
 		if (player) {
-			player.destroy();
+			try {
+				player.destroy();
+			} catch (error) {
+				console.warn('Error destroying existing player:', error);
+			}
 			player = null;
 		}
 
-		player = new (window as any).Vimeo.Player(iframe);
+		try {
+			player = new (window as any).Vimeo.Player(iframe);
+			console.log('Player created successfully for project:', project._id);
+		} catch (error) {
+			console.error('Error creating Vimeo player:', error);
+			return;
+		}
 
 		// Player events
 		player.on('loaded', () => {
