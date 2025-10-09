@@ -74,14 +74,18 @@
 		}
 	}
 
-	// Reactive statement to handle project changes
-	$: if (project && project._id !== previousProjectId) {
-		console.log('Project changed from', previousProjectId, 'to', project._id);
-		resetStateForNewProject();
-	}
+	// Manual project change detection - will be called from onMount
+	let lastCheckedProjectId = $state<string | null>(null);
 
 	// Load Vimeo Player API
 	onMount(() => {
+		// Check if project has changed
+		if (project && project._id !== lastCheckedProjectId) {
+			console.log('Project changed from', lastCheckedProjectId, 'to', project._id);
+			resetStateForNewProject();
+			lastCheckedProjectId = project._id;
+		}
+
 		const script = document.createElement('script');
 		script.src = 'https://player.vimeo.com/api/player.js';
 		script.onload = () => {
