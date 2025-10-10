@@ -976,6 +976,8 @@
 		width: 200px;
 		cursor: pointer;
 		pointer-events: auto;
+		display: flex;
+		flex-direction: column;
 	}
 
 	.nav-thumbnail-left {
@@ -992,17 +994,22 @@
 		border-radius: 10px;
 		overflow: hidden;
 		background: #000;
+		position: relative;
 	}
 
 	.thumbnail-container iframe {
+		position: absolute;
+		top: 0;
+		left: 0;
 		width: 100%;
 		height: 100%;
 		border: none;
 		pointer-events: none;
+		object-fit: cover;
 	}
 
 	.thumbnail-title {
-		margin-top: 8px;
+		margin-top: 12px;
 		color: white;
 		font-size: 12px;
 		text-align: center;
