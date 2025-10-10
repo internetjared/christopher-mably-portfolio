@@ -296,38 +296,6 @@
 		{/if}
 	{/if}
 
-	<!-- Preloaded Thumbnails (always loaded, hidden until pause) -->
-	{#if allProjects.length > 1}
-		<div class="thumbnail-preload-container">
-			{#if getPreviousProject()}
-				{@const prevProject = getPreviousProject()}
-				{@const prevVideoId = getVimeoVideoId(prevProject.vimeoUrl)}
-				{#if prevVideoId}
-					<iframe
-						class="preload-thumbnail"
-						src="https://player.vimeo.com/video/{prevVideoId}?autoplay=1&muted=1&loop=1&controls=0&background=1"
-						frameborder="0"
-						allow="autoplay"
-						title="{prevProject.title} preview preload"
-					></iframe>
-				{/if}
-			{/if}
-
-			{#if getNextProject()}
-				{@const nextProject = getNextProject()}
-				{@const nextVideoId = getVimeoVideoId(nextProject.vimeoUrl)}
-				{#if nextVideoId}
-					<iframe
-						class="preload-thumbnail"
-						src="https://player.vimeo.com/video/{nextVideoId}?autoplay=1&muted=1&loop=1&controls=0&background=1"
-						frameborder="0"
-						allow="autoplay"
-						title="{nextProject.title} preview preload"
-					></iframe>
-				{/if}
-			{/if}
-		</div>
-	{/if}
 
 	<!-- Play/Pause Button -->
 	<div class="play-pause-overlay" class:visible={showControls}>
@@ -413,9 +381,9 @@
 		</div>
 	{/if}
 
-	<!-- Navigation Thumbnails (shown when paused) -->
-	{#if allProjects.length > 1 && !isPlaying}
-		<div class="nav-thumbnails">
+	<!-- Navigation Thumbnails (always loaded, shown when paused) -->
+	{#if allProjects.length > 1}
+		<div class="nav-thumbnails" class:visible={!isPlaying}>
 			{#if getPreviousProject()}
 				{@const prevProject = getPreviousProject()}
 				{@const prevVideoId = getVimeoVideoId(prevProject.vimeoUrl)}
@@ -939,24 +907,6 @@
 		height: 48px;
 	}
 
-	/* Preload container - hidden but videos are playing */
-	.thumbnail-preload-container {
-		position: absolute;
-		width: 200px;
-		height: 112px;
-		overflow: hidden;
-		opacity: 0;
-		pointer-events: none;
-		z-index: -1;
-		top: -200px; /* Move completely off-screen */
-		left: -200px;
-	}
-
-	.preload-thumbnail {
-		width: 200px;
-		height: 112px;
-		border: none;
-	}
 
 	/* Navigation Thumbnails */
 	.nav-thumbnails {
@@ -967,6 +917,18 @@
 		bottom: 0;
 		pointer-events: none;
 		z-index: 65;
+		opacity: 0;
+		visibility: hidden;
+		transition: opacity 0.3s ease, visibility 0.3s ease;
+	}
+
+	.nav-thumbnails.visible {
+		opacity: 1;
+		visibility: visible;
+	}
+
+	.nav-thumbnails.visible .nav-thumbnail {
+		pointer-events: auto;
 	}
 
 	.nav-thumbnail {
