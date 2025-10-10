@@ -942,12 +942,14 @@
 	/* Preload container - hidden but videos are playing */
 	.thumbnail-preload-container {
 		position: absolute;
-		width: 1px;
-		height: 1px;
+		width: 200px;
+		height: 112px;
 		overflow: hidden;
 		opacity: 0;
 		pointer-events: none;
 		z-index: -1;
+		top: -200px; /* Move completely off-screen */
+		left: -200px;
 	}
 
 	.preload-thumbnail {
@@ -969,7 +971,7 @@
 
 	.nav-thumbnail {
 		position: absolute;
-		top: 45%;
+		top: 50%;
 		transform: translateY(-50%);
 		width: 200px;
 		cursor: pointer;
@@ -977,11 +979,11 @@
 	}
 
 	.nav-thumbnail-left {
-		left: 80px;
+		left: 120px; /* Position next to left arrow (arrow is at 20px + 48px width + 20px gap = 88px, so 120px gives good spacing) */
 	}
 
 	.nav-thumbnail-right {
-		right: 80px;
+		right: 120px; /* Position next to right arrow */
 	}
 
 	.thumbnail-container {
