@@ -296,6 +296,39 @@
 		{/if}
 	{/if}
 
+	<!-- Preloaded Thumbnails (always loaded, hidden until pause) -->
+	{#if allProjects.length > 1}
+		<div class="thumbnail-preload-container">
+			{#if getPreviousProject()}
+				{@const prevProject = getPreviousProject()}
+				{@const prevVideoId = getVimeoVideoId(prevProject.vimeoUrl)}
+				{#if prevVideoId}
+					<iframe
+						class="preload-thumbnail"
+						src="https://player.vimeo.com/video/{prevVideoId}?autoplay=1&muted=1&loop=1&controls=0&background=1"
+						frameborder="0"
+						allow="autoplay"
+						title="{prevProject.title} preview preload"
+					></iframe>
+				{/if}
+			{/if}
+
+			{#if getNextProject()}
+				{@const nextProject = getNextProject()}
+				{@const nextVideoId = getVimeoVideoId(nextProject.vimeoUrl)}
+				{#if nextVideoId}
+					<iframe
+						class="preload-thumbnail"
+						src="https://player.vimeo.com/video/{nextVideoId}?autoplay=1&muted=1&loop=1&controls=0&background=1"
+						frameborder="0"
+						allow="autoplay"
+						title="{nextProject.title} preview preload"
+					></iframe>
+				{/if}
+			{/if}
+		</div>
+	{/if}
+
 	<!-- Play/Pause Button -->
 	<div class="play-pause-overlay" class:visible={showControls}>
 		<button class="play-pause-button" onclick={togglePlayPause}>
@@ -906,6 +939,23 @@
 		height: 48px;
 	}
 
+	/* Preload container - hidden but videos are playing */
+	.thumbnail-preload-container {
+		position: absolute;
+		width: 1px;
+		height: 1px;
+		overflow: hidden;
+		opacity: 0;
+		pointer-events: none;
+		z-index: -1;
+	}
+
+	.preload-thumbnail {
+		width: 200px;
+		height: 112px;
+		border: none;
+	}
+
 	/* Navigation Thumbnails */
 	.nav-thumbnails {
 		position: absolute;
@@ -919,7 +969,7 @@
 
 	.nav-thumbnail {
 		position: absolute;
-		top: 50%;
+		top: 45%;
 		transform: translateY(-50%);
 		width: 200px;
 		cursor: pointer;
