@@ -1,9 +1,10 @@
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
+	import { goto } from '$app/navigation';
 	import type { SanityProject } from '$lib/types/sanity';
 	
 	// Props
-	let { project }: { project: SanityProject | null } = $props();
+	let { project, allProjects }: { project: SanityProject | null; allProjects: SanityProject[] } = $props();
 	
 	// State
 	let player: any = null;
@@ -23,6 +24,28 @@
 	function getVimeoVideoId(vimeoUrl: string): string {
 		const match = vimeoUrl.match(/(?:vimeo\.com\/|player\.vimeo\.com\/video\/)(\d+)/);
 		return match ? match[1] : '';
+	}
+
+	// Navigation helper functions
+	function getPreviousProject(): SanityProject | null {
+		if (!project || !allProjects.length) return null;
+		const currentIndex = allProjects.findIndex(p => p._id === project._id);
+		if (currentIndex === -1) return null;
+		const prevIndex = currentIndex === 0 ? allProjects.length - 1 : currentIndex - 1;
+		return allProjects[prevIndex];
+	}
+
+	function getNextProject(): SanityProject | null {
+		if (!project || !allProjects.length) return null;
+		const currentIndex = allProjects.findIndex(p => p._id === project._id);
+		if (currentIndex === -1) return null;
+		const nextIndex = currentIndex === allProjects.length - 1 ? 0 : currentIndex + 1;
+		return allProjects[nextIndex];
+	}
+
+	function navigateToProject(targetProject: SanityProject | null) {
+		if (!targetProject?.slug?.current) return;
+		goto(`/project/${targetProject.slug.current}`);
 	}
 
 
@@ -332,6 +355,83 @@
 		/>
 				</div>
 
+	<!-- Navigation Arrows -->
+	{#if allProjects.length > 1}
+		<div class="nav-arrows" class:visible={showControls}>
+			<button 
+				class="nav-arrow nav-arrow-left" 
+				onclick={() => navigateToProject(getPreviousProject())}
+				aria-label="Previous project"
+			>
+				<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+					<path d="M15 18l-6-6 6-6"/>
+				</svg>
+			</button>
+
+			<button 
+				class="nav-arrow nav-arrow-right" 
+				onclick={() => navigateToProject(getNextProject())}
+				aria-label="Next project"
+			>
+				<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+					<path d="M9 18l6-6-6-6"/>
+				</svg>
+			</button>
+		</div>
+	{/if}
+
+	<!-- Navigation Thumbnails (shown when paused) -->
+	{#if allProjects.length > 1 && !isPlaying}
+		<div class="nav-thumbnails">
+			{#if getPreviousProject()}
+				{@const prevProject = getPreviousProject()}
+				{@const prevVideoId = getVimeoVideoId(prevProject.vimeoUrl)}
+				{#if prevVideoId}
+					<div 
+						class="nav-thumbnail nav-thumbnail-left"
+						onclick={() => navigateToProject(prevProject)}
+						role="button"
+						tabindex="0"
+						onkeydown={(e) => e.key === 'Enter' && navigateToProject(prevProject)}
+					>
+						<div class="thumbnail-container">
+							<iframe
+								src="https://player.vimeo.com/video/{prevVideoId}?autoplay=1&muted=1&loop=1&controls=0&background=1"
+								frameborder="0"
+								allow="autoplay"
+								title="{prevProject.title} preview"
+							></iframe>
+						</div>
+						<div class="thumbnail-title">{prevProject.title}</div>
+					</div>
+				{/if}
+			{/if}
+
+			{#if getNextProject()}
+				{@const nextProject = getNextProject()}
+				{@const nextVideoId = getVimeoVideoId(nextProject.vimeoUrl)}
+				{#if nextVideoId}
+					<div 
+						class="nav-thumbnail nav-thumbnail-right"
+						onclick={() => navigateToProject(nextProject)}
+						role="button"
+						tabindex="0"
+						onkeydown={(e) => e.key === 'Enter' && navigateToProject(nextProject)}
+					>
+						<div class="thumbnail-container">
+							<iframe
+								src="https://player.vimeo.com/video/{nextVideoId}?autoplay=1&muted=1&loop=1&controls=0&background=1"
+								frameborder="0"
+								allow="autoplay"
+								title="{nextProject.title} preview"
+							></iframe>
+						</div>
+						<div class="thumbnail-title">{nextProject.title}</div>
+					</div>
+				{/if}
+			{/if}
+		</div>
+	{/if}
 
 	<!-- Overview Modal -->
 	{#if showOverview}
@@ -756,5 +856,104 @@
 		.modal-text {
 			font-size: 13px;
 		}
+	}
+
+	/* Navigation Arrows */
+	.nav-arrows {
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		pointer-events: none;
+		opacity: 0;
+		transition: opacity 0.3s ease;
+		z-index: 60;
+	}
+
+	.nav-arrows.visible {
+		opacity: 1;
+	}
+
+	.nav-arrow {
+		position: absolute;
+		top: 50%;
+		transform: translateY(-50%);
+		background: transparent;
+		border: none;
+		color: white;
+		cursor: pointer;
+		padding: 12px;
+		pointer-events: auto;
+		opacity: 0.7;
+		transition: opacity 0.3s ease;
+	}
+
+	.nav-arrow:hover {
+		opacity: 1;
+	}
+
+	.nav-arrow-left {
+		left: 20px;
+	}
+
+	.nav-arrow-right {
+		right: 20px;
+	}
+
+	.nav-arrow svg {
+		width: 48px;
+		height: 48px;
+	}
+
+	/* Navigation Thumbnails */
+	.nav-thumbnails {
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		pointer-events: none;
+		z-index: 65;
+	}
+
+	.nav-thumbnail {
+		position: absolute;
+		top: 50%;
+		transform: translateY(-50%);
+		width: 200px;
+		cursor: pointer;
+		pointer-events: auto;
+	}
+
+	.nav-thumbnail-left {
+		left: 80px;
+	}
+
+	.nav-thumbnail-right {
+		right: 80px;
+	}
+
+	.thumbnail-container {
+		width: 100%;
+		aspect-ratio: 16/9;
+		border-radius: 10px;
+		overflow: hidden;
+		background: #000;
+	}
+
+	.thumbnail-container iframe {
+		width: 100%;
+		height: 100%;
+		border: none;
+		pointer-events: none;
+	}
+
+	.thumbnail-title {
+		margin-top: 8px;
+		color: white;
+		font-size: 12px;
+		text-align: center;
+		font-family: system-ui, -apple-system, sans-serif;
 	}
 </style>

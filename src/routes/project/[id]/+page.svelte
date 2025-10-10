@@ -10,7 +10,9 @@
 </svelte:head>
 
 <main>
-	<EnhancedVideoPlayer project={data.project} allProjects={data.allProjects} />
+	{#key data.project._id}
+		<EnhancedVideoPlayer project={data.project} allProjects={data.allProjects} />
+	{/key}
 </main>
 
 <style>
