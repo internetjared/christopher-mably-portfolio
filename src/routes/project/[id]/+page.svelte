@@ -1,25 +1,44 @@
 <script lang="ts">
 	import EnhancedVideoPlayer from '$lib/components/EnhancedVideoPlayer.svelte';
+	import PageTransition from '$lib/components/PageTransition.svelte';
+	import VideoSkeleton from '$lib/components/VideoSkeleton.svelte';
 	import type { SanityProject } from '$lib/types/sanity';
-
+	
 	let { data }: { data: { project: SanityProject; allProjects: SanityProject[] } } = $props();
+	
+	let showSkeleton = $state(true);
+	let currentProjectId = $state(data.project._id);
+	
+	// Detect project changes
+	$effect(() => {
+		if (data.project._id !== currentProjectId) {
+			showSkeleton = true;
+			currentProjectId = data.project._id;
+			// Hide skeleton after short delay
+			setTimeout(() => {
+				showSkeleton = false;
+			}, 300);
+		} else {
+			showSkeleton = false;
+		}
+	});
 </script>
 
 <svelte:head>
 	<title>{data.project.title}</title>
 </svelte:head>
 
-<main>
-	{#if data?.project}
+<PageTransition>
+	<main>
+		{#if showSkeleton}
+			<VideoSkeleton />
+		{/if}
+		
 		{#key data.project._id}
 			<EnhancedVideoPlayer project={data.project} allProjects={data.allProjects} />
 		{/key}
-	{:else}
-		<div style="color: white; padding: 20px; background: #000; height: 100vh; display: flex; align-items: center; justify-content: center;">
-			Loading project...
-		</div>
-	{/if}
-</main>
+	</main>
+</PageTransition>
 
 <style>
 	main {
@@ -28,6 +47,5 @@
 		margin: 0;
 		padding: 0;
 		position: relative;
-		z-index: 1;
 	}
 </style>

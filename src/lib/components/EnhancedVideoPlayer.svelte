@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
 	import { goto } from '$app/navigation';
+	import { preloadData } from '$app/navigation';
 	import type { SanityProject } from '$lib/types/sanity';
 	
 	// Props
@@ -48,6 +49,21 @@
 		if (!targetProject?.slug?.current) return;
 		goto(`/project/${targetProject.slug.current}`);
 	}
+
+	// Preload adjacent project data
+	$effect(() => {
+		if (allProjects.length > 1) {
+			const prevProject = getPreviousProject();
+			const nextProject = getNextProject();
+			
+			if (prevProject?.slug?.current) {
+				preloadData(`/project/${prevProject.slug.current}`);
+			}
+			if (nextProject?.slug?.current) {
+				preloadData(`/project/${nextProject.slug.current}`);
+			}
+		}
+	});
 
 
 

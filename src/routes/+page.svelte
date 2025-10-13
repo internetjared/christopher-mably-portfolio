@@ -1,24 +1,27 @@
 <script lang="ts">
-  import ProjectCarousel from '$lib/components/ProjectCarousel.svelte';
-  import Header from '$lib/components/Header.svelte';
-  import type { SanityProject } from '$lib/types/sanity';
+	import ProjectCarousel from '$lib/components/ProjectCarousel.svelte';
+	import Header from '$lib/components/Header.svelte';
+	import PageTransition from '$lib/components/PageTransition.svelte';
+	import type { SanityProject } from '$lib/types/sanity';
 
-  let { data }: { data: { allProjects: SanityProject[] } } = $props();
+	let { data }: { data: { allProjects: SanityProject[] } } = $props();
 </script>
 
 <svelte:head>
-  <title>Christopher Mably Portfolio</title>
+	<title>Christopher Mably Portfolio</title>
 </svelte:head>
 
-<Header />
+<PageTransition>
+	<Header />
 
-<main>
-  <ProjectCarousel projects={data.allProjects} />
-</main>
+	<main>
+		<ProjectCarousel projects={data.allProjects} />
+	</main>
+</PageTransition>
 
 <style>
-  main {
-    min-height: 100vh;
-    background: #fff;
-  }
+	main {
+		min-height: 100vh;
+		background: #fff;
+	}
 </style>

@@ -36,6 +36,23 @@
     }
     preloadData(`/project/${projects[currentIndex].slug.current}`);
   }
+
+  // Preload current, next, and previous projects
+  $effect(() => {
+    const current = projects[currentIndex];
+    const next = projects[(currentIndex + 1) % projects.length];
+    const prev = projects[(currentIndex - 1 + projects.length) % projects.length];
+    
+    if (current?.slug?.current) {
+      preloadData(`/project/${current.slug.current}`);
+    }
+    if (next?.slug?.current) {
+      preloadData(`/project/${next.slug.current}`);
+    }
+    if (prev?.slug?.current) {
+      preloadData(`/project/${prev.slug.current}`);
+    }
+  });
   
   // Drag/swipe handlers
   let dragStartTime = $state(0);
