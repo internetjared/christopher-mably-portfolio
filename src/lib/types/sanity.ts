@@ -6,6 +6,13 @@ export interface SanityProject {
     current: string;
   };
   vimeoUrl: string;
+  thumbnail?: {
+    asset: {
+      _ref: string;
+      _type: string;
+    };
+    alt?: string;
+  };
   overview?: string;
   credits?: string;
   orderRank?: string;

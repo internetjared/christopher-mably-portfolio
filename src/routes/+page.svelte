@@ -1,23 +1,24 @@
 <script lang="ts">
-	import EnhancedVideoPlayer from '$lib/components/EnhancedVideoPlayer.svelte';
-	import type { SanityProject } from '$lib/types/sanity';
+  import ProjectGrid from '$lib/components/ProjectGrid.svelte';
+  import Header from '$lib/components/Header.svelte';
+  import type { SanityProject } from '$lib/types/sanity';
 
-	let { data }: { data: { project: SanityProject | null; allProjects: SanityProject[] } } = $props();
+  let { data }: { data: { allProjects: SanityProject[] } } = $props();
 </script>
 
 <svelte:head>
-	<title>Christopher Mably Portfolio</title>
+  <title>Christopher Mably Portfolio</title>
 </svelte:head>
 
+<Header />
+
 <main>
-	<EnhancedVideoPlayer project={data.project} allProjects={data.allProjects} />
+  <ProjectGrid projects={data.allProjects} />
 </main>
 
 <style>
-	main {
-		width: 100%;
-		height: 100vh;
-		margin: 0;
-		padding: 0;
-	}
+  main {
+    min-height: 100vh;
+    background: #fff;
+  }
 </style>

@@ -1,5 +1,6 @@
 import { createClient } from '@sanity/client';
 import { env } from '$env/dynamic/public';
+import imageUrlBuilder from '@sanity/image-url';
 
 // Sanity client configuration
 export const sanityClient = createClient({
@@ -9,12 +10,23 @@ export const sanityClient = createClient({
   useCdn: true,
 });
 
+// Image URL builder
+const builder = imageUrlBuilder(sanityClient);
+
+export function urlFor(source: any) {
+  return builder.image(source);
+}
+
 // Simple project query - using orderRank for drag-and-drop ordering
 const PROJECTS_QUERY = `*[_type == "project"] | order(orderRank asc) {
   _id,
   title,
   slug,
   vimeoUrl,
+  thumbnail {
+    asset->,
+    alt
+  },
   overview,
   credits,
   orderRank
@@ -38,6 +50,10 @@ export async function getProjectBySlug(slug: string) {
       title,
       slug,
       vimeoUrl,
+      thumbnail {
+        asset->,
+        alt
+      },
       overview,
       credits,
       orderRank
