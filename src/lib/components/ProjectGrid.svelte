@@ -42,8 +42,8 @@
         {/if}
         
         <!-- Preloaded Video (always present, hidden until hover) -->
-        {@const videoId = getVimeoVideoId(project.vimeoUrl)}
-        {#if videoId}
+        {#if getVimeoVideoId(project.vimeoUrl)}
+          {@const videoId = getVimeoVideoId(project.vimeoUrl)}
           <iframe
             src="https://player.vimeo.com/video/{videoId}?autoplay=1&muted=1&loop=1&controls=0&background=1"
             class="video-hover"
