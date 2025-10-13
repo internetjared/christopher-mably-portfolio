@@ -347,14 +347,25 @@
 	</div>
 
 
-	<!-- Logo (shown when paused) -->
+	<!-- Logo (shown when paused, clickable to homepage) -->
 	<div class="logo-overlay" class:visible={!isPlaying}>
-		<img 
-			src="https://iili.io/KjiTMH7.png" 
-			alt="Mably Logo" 
-			class="logo-image"
-		/>
-				</div>
+		<a href="/" class="logo-link">
+			<img 
+				src="https://iili.io/KjiTMH7.png" 
+				alt="Mably Logo" 
+				class="logo-image"
+			/>
+		</a>
+	</div>
+
+	<!-- Close Button (top-right) -->
+	<div class="close-button-overlay" class:visible={showControls}>
+		<a href="/" class="close-button" aria-label="Back to homepage">
+			<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+				<path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+			</svg>
+		</a>
+	</div>
 
 	<!-- Navigation Arrows -->
 	{#if allProjects.length > 1}
@@ -660,16 +671,65 @@
 		z-index: 70;
 		opacity: 0;
 		transition: opacity 0.3s ease;
+		pointer-events: none;
 	}
 
 	.logo-overlay.visible {
 		opacity: 1;
+		pointer-events: auto;
 	}
 
 	.logo-image {
 		height: 30px;
 		width: auto;
 		object-fit: contain;
+	}
+
+	/* Logo Link */
+	.logo-link {
+		display: block;
+		cursor: pointer;
+		transition: opacity 0.2s ease;
+	}
+
+	.logo-link:hover {
+		opacity: 0.8;
+	}
+
+	/* Close Button (top-right) */
+	.close-button-overlay {
+		position: absolute;
+		top: 30px;
+		right: 40px;
+		z-index: 70;
+		opacity: 0;
+		transition: opacity 0.3s ease;
+		pointer-events: auto;
+	}
+
+	.close-button-overlay.visible {
+		opacity: 1;
+	}
+
+	.close-button {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 40px;
+		height: 40px;
+		color: white;
+		text-decoration: none;
+		cursor: pointer;
+		transition: opacity 0.2s ease;
+	}
+
+	.close-button:hover {
+		opacity: 0.7;
+	}
+
+	.close-button svg {
+		width: 24px;
+		height: 24px;
 	}
 
 	/* Responsive design */
