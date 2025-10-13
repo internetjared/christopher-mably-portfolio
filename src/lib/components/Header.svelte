@@ -40,16 +40,15 @@
   
   .info-button {
     background: transparent;
-    border: 1px solid #000;
-    padding: 10px 30px;
+    border: none;
+    padding: 0;
     font-size: 14px;
     cursor: pointer;
-    border-radius: 20px;
-    transition: all 0.3s ease;
+    color: #000;
+    transition: opacity 0.3s ease;
   }
   
   .info-button:hover {
-    background: #000;
-    color: #fff;
+    opacity: 0.7;
   }
 </style>

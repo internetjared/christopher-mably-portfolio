@@ -19,6 +19,7 @@
 	let showOverview = $state(false);
 	let showCredits = $state(false);
 	let isMuted = $state(true);
+	let isInitializing = $state(false);
 
 	// Utility function to extract Vimeo video ID
 	function getVimeoVideoId(vimeoUrl: string): string {
@@ -52,12 +53,19 @@
 
 		// Load Vimeo Player API
 	onMount(() => {
-		const script = document.createElement('script');
-		script.src = 'https://player.vimeo.com/api/player.js';
-		script.onload = () => {
+		// Check if Vimeo Player API is already loaded
+		if ((window as any).Vimeo) {
+			// API already loaded, initialize immediately
+			initializePlayer();
+		} else {
+			// Load the API script
+			const script = document.createElement('script');
+			script.src = 'https://player.vimeo.com/api/player.js';
+			script.onload = () => {
 				initializePlayer();
-		};
-		document.head.appendChild(script);
+			};
+			document.head.appendChild(script);
+		}
 
 		// Hide controls after 3 seconds of inactivity (only if playing)
 		if (isPlaying) {
@@ -83,20 +91,31 @@
 	function initializePlayer() {
 		console.log('Initializing player for project:', project?._id);
 		
+		// Prevent multiple simultaneous initializations
+		if (isInitializing) {
+			console.log('Already initializing, skipping...');
+			return;
+		}
+		
+		isInitializing = true;
+		
 		if (!project?.vimeoUrl) {
 			console.warn('No vimeoUrl for project:', project);
+			isInitializing = false;
 			return;
 		}
 
 		const videoId = getVimeoVideoId(project.vimeoUrl);
 		if (!videoId) {
 			console.warn('No video ID found for URL:', project.vimeoUrl);
+			isInitializing = false;
 			return;
 		}
 
 		const iframe = document.getElementById('vimeo-player') as HTMLIFrameElement;
 		if (!iframe) {
 			console.warn('Vimeo iframe not found');
+			isInitializing = false;
 			return;
 		}
 
@@ -104,6 +123,7 @@
 		if (player) {
 			try {
 				player.destroy();
+				console.log('Destroyed old player');
 			} catch (error) {
 				console.warn('Error destroying existing player:', error);
 			}
@@ -115,13 +135,14 @@
 			console.log('Player created successfully for project:', project._id);
 		} catch (error) {
 			console.error('Error creating Vimeo player:', error);
+			isInitializing = false;
 			return;
 		}
 
 		// Player events
 		player.on('loaded', () => {
-					player.getDuration().then((dur: number) => {
-						duration = dur;
+			player.getDuration().then((dur: number) => {
+				duration = dur;
 			});
 			// Set sound to off by default
 			player.setVolume(0);
@@ -130,6 +151,7 @@
 			if (isPlaying) {
 				startSmoothProgress();
 			}
+			isInitializing = false; // Mark initialization complete
 		});
 
 		player.on('timeupdate', (data: any) => {
@@ -137,47 +159,59 @@
 			lastUpdateTime = data.seconds;
 		});
 
-				player.on('play', () => {
-					isPlaying = true;
-					startSmoothProgress();
-				});
+		player.on('play', () => {
+			isPlaying = true;
+			startSmoothProgress();
+		});
 
-				player.on('pause', () => {
-					isPlaying = false;
-					stopSmoothProgress();
-				});
+		player.on('pause', () => {
+			isPlaying = false;
+			stopSmoothProgress();
+		});
 
-				player.on('ended', () => {
-					isPlaying = false;
+		player.on('ended', () => {
+			isPlaying = false;
 			stopSmoothProgress();
 		});
 	}
 
 	// Toggle play/pause
 	function togglePlayPause() {
+		console.log('togglePlayPause called, player:', player, 'isPlaying:', isPlaying);
+		
 		if (!player) {
 			console.warn('Player not initialized yet');
 			return;
 		}
 		
-			try {
-				if (isPlaying) {
-				player.pause();
+		// Check if player is still valid
+		if (isInitializing) {
+			console.warn('Player is still initializing, please wait...');
+			return;
+		}
+		
+		try {
+			if (isPlaying) {
+				player.pause().then(() => {
+					console.log('Video paused successfully');
+				}).catch((error: any) => {
+					console.error('Error pausing video:', error);
+				});
 				// Clear any existing timeout and keep controls visible when paused
 				if (hideTimeout) {
 					clearTimeout(hideTimeout);
 					hideTimeout = null;
 				}
 				showControls = true;
-				} else {
-				player.play();
-				}
-			} catch (error) {
+			} else {
+				player.play().then(() => {
+					console.log('Video playing successfully');
+				}).catch((error: any) => {
+					console.error('Error playing video:', error);
+				});
+			}
+		} catch (error) {
 			console.error('Error toggling play/pause:', error);
-			// Try to reinitialize player if there's an error
-			setTimeout(() => {
-				initializePlayer();
-			}, 100);
 		}
 	}
 
@@ -511,11 +545,12 @@
 		z-index: 40;
 		opacity: 0;
 		transition: opacity 0.3s ease;
-		pointer-events: auto;
+		pointer-events: none; /* Changed from auto */
 	}
 
 	.play-pause-overlay.visible {
 		opacity: 1;
+		pointer-events: auto; /* Enable when visible */
 	}
 
 	.play-pause-button {
@@ -699,7 +734,7 @@
 	/* Close Button (top-right) */
 	.close-button-overlay {
 		position: absolute;
-		top: 30px;
+		top: 20px; /* Changed from 30px to match logo */
 		right: 40px;
 		z-index: 70;
 		opacity: 0;
@@ -715,8 +750,6 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		width: 40px;
-		height: 40px;
 		color: white;
 		text-decoration: none;
 		cursor: pointer;
@@ -724,7 +757,7 @@
 	}
 
 	.close-button:hover {
-		opacity: 0.7;
+		opacity: 0.7; /* Simple opacity reduction, no background */
 	}
 
 	.close-button svg {
@@ -763,6 +796,10 @@
 
 		.logo-image {
 			height: 30px;
+		}
+
+		.close-button-overlay {
+			top: 15px; /* Match logo position on mobile */
 		}
 
 		.progress-container {
@@ -823,6 +860,10 @@
 		.logo-image {
 			height: 30px;
 		}
+
+		.close-button-overlay {
+			top: 10px; /* Match logo position on smaller screens */
+		}
 	}
 
 	/* Modal Styles */
@@ -861,7 +902,7 @@
 		text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
 	}
 
-	.close-button {
+	.modal-content .close-button {
 		position: absolute;
 		bottom: -50px;
 		left: 50%;
@@ -875,7 +916,7 @@
 		transition: all 0.2s ease;
 	}
 
-	.close-button:hover {
+	.modal-content .close-button:hover {
 		background: rgba(255, 255, 255, 0.2);
 		transform: translateX(-50%) scale(1.1);
 	}

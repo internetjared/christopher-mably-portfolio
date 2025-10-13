@@ -1,5 +1,6 @@
 <script lang="ts">
   import { urlFor } from '$lib/sanity';
+  import { preloadData } from '$app/navigation';
   import type { SanityProject } from '$lib/types/sanity';
   
   let { projects }: { projects: SanityProject[] } = $props();
@@ -10,6 +11,12 @@
   function getVimeoVideoId(vimeoUrl: string): string {
     const match = vimeoUrl.match(/(?:vimeo\.com\/|player\.vimeo\.com\/video\/)(\d+)/);
     return match ? match[1] : '';
+  }
+  
+  function handleMouseEnter(project: SanityProject) {
+    hoveredProject = project._id;
+    // Preload the project page for instant navigation
+    preloadData(`/project/${project.slug.current}`);
   }
 </script>
 
@@ -23,7 +30,7 @@
       <a 
         href="/project/{project.slug.current}"
         class="thumbnail-container"
-        onmouseenter={() => hoveredProject = project._id}
+        onmouseenter={() => handleMouseEnter(project)}
         onmouseleave={() => hoveredProject = null}
       >
         <!-- Thumbnail Image -->

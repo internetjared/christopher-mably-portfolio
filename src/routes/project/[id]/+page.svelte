@@ -10,9 +10,15 @@
 </svelte:head>
 
 <main>
-	{#key data.project._id}
-		<EnhancedVideoPlayer project={data.project} allProjects={data.allProjects} />
-	{/key}
+	{#if data?.project}
+		{#key data.project._id}
+			<EnhancedVideoPlayer project={data.project} allProjects={data.allProjects} />
+		{/key}
+	{:else}
+		<div style="color: white; padding: 20px; background: #000; height: 100vh; display: flex; align-items: center; justify-content: center;">
+			Loading project...
+		</div>
+	{/if}
 </main>
 
 <style>
@@ -21,5 +27,7 @@
 		height: 100vh;
 		margin: 0;
 		padding: 0;
+		position: relative;
+		z-index: 1;
 	}
 </style>

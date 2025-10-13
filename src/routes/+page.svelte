@@ -1,5 +1,5 @@
 <script lang="ts">
-  import ProjectGrid from '$lib/components/ProjectGrid.svelte';
+  import ProjectCarousel from '$lib/components/ProjectCarousel.svelte';
   import Header from '$lib/components/Header.svelte';
   import type { SanityProject } from '$lib/types/sanity';
 
@@ -13,7 +13,7 @@
 <Header />
 
 <main>
-  <ProjectGrid projects={data.allProjects} />
+  <ProjectCarousel projects={data.allProjects} />
 </main>
 
 <style>
