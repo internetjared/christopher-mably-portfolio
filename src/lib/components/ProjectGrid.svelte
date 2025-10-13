@@ -27,13 +27,18 @@
         onmouseleave={() => hoveredProject = null}
       >
         <!-- Thumbnail Image -->
-        {#if project.thumbnail}
+        {#if project.thumbnail && project.thumbnail.asset}
           <img 
             src={urlFor(project.thumbnail).width(800).url()}
             alt={project.thumbnail.alt || project.title}
             class="thumbnail"
             class:faded={hoveredProject === project._id}
           />
+        {:else}
+          <!-- Fallback placeholder when no thumbnail -->
+          <div class="thumbnail-placeholder">
+            <span>No Image</span>
+          </div>
         {/if}
         
         <!-- Preloaded Video (always present, hidden until hover) -->
@@ -91,7 +96,7 @@
     transform: scale(1.02);
   }
   
-  .thumbnail, .video-hover {
+  .thumbnail, .video-hover, .thumbnail-placeholder {
     position: absolute;
     top: 0;
     left: 0;
@@ -99,6 +104,15 @@
     height: 100%;
     object-fit: cover;
     transition: opacity 0.5s ease;
+  }
+  
+  .thumbnail-placeholder {
+    background: #f0f0f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #666;
+    font-size: 14px;
   }
   
   .thumbnail.faded {
