@@ -11,6 +11,7 @@
   let startX = $state(0);
   let currentTranslate = $state(0);
   let prevTranslate = $state(0);
+  let hoveredProjectIndex = $state(null);
   
   // Get Vimeo video ID
   function getVimeoVideoId(vimeoUrl: string): string {
@@ -158,7 +159,11 @@
         <a 
           href="/project/{project.slug.current}"
           class="project-link"
-          onmouseenter={() => preloadData(`/project/${project.slug.current}`)}
+          onmouseenter={() => {
+            preloadData(`/project/${project.slug.current}`);
+            hoveredProjectIndex = index;
+          }}
+          onmouseleave={() => hoveredProjectIndex = null}
         >
           <div class="media-container">
             <!-- Thumbnail Image (always visible) -->
@@ -189,6 +194,17 @@
             ></iframe>
           {/if}
         {/if}
+            
+            <!-- Play Button Overlay (only for active video on hover) -->
+            {#if index === currentIndex && hoveredProjectIndex === index}
+              <div class="play-button-overlay">
+                <div class="play-button">
+                  <svg width="50" height="50" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M8 5v14l11-7z"/>
+                  </svg>
+                </div>
+              </div>
+            {/if}
           </div>
           
           <!-- Title and Arrows Container -->
@@ -298,6 +314,45 @@
     border-radius: 10px;
     overflow: hidden;
     background: #f0f0f0;
+  }
+
+  /* Play Button Overlay */
+  .play-button-overlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    animation: fadeIn 0.3s ease-out forwards;
+    pointer-events: none;
+  }
+
+  .play-button {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+    pointer-events: auto;
+  }
+
+  .play-button:hover {
+    opacity: 0.8;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
   }
   
   .thumbnail, .video-player {

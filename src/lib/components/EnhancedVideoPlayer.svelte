@@ -400,11 +400,10 @@
 	<!-- Logo (shown when paused, clickable to homepage) -->
 	<div class="logo-overlay" class:visible={!isPlaying}>
 		<a href="/" class="logo-link">
-			<img 
-				src="https://iili.io/KjiTMH7.png" 
-				alt="Mably Logo" 
-				class="logo-image"
-			/>
+			<div class="logo-text">
+				<div class="main-text">Christopher Mably</div>
+				<div class="sub-text">CSC</div>
+			</div>
 		</a>
 	</div>
 
@@ -730,10 +729,26 @@
 		pointer-events: auto;
 	}
 
-	.logo-image {
-		height: 30px;
-		width: auto;
-		object-fit: contain;
+	.logo-text {
+		display: flex;
+		flex-direction: row;
+		align-items: baseline;
+		line-height: 1;
+		gap: 8px;
+	}
+
+	.main-text {
+		font-size: 18px;
+		font-weight: 600;
+		color: #fff;
+		font-family: system-ui, -apple-system, sans-serif;
+	}
+
+	.sub-text {
+		font-size: 12px;
+		font-weight: 400;
+		color: #fff;
+		font-family: system-ui, -apple-system, sans-serif;
 	}
 
 	/* Logo Link */
@@ -810,8 +825,12 @@
 			left: 15px;
 		}
 
-		.logo-image {
-			height: 30px;
+		.main-text {
+			font-size: 16px;
+		}
+		
+		.sub-text {
+			font-size: 11px;
 		}
 
 		.close-button-overlay {
@@ -873,8 +892,12 @@
 			left: 10px;
 		}
 
-		.logo-image {
-			height: 30px;
+		.main-text {
+			font-size: 14px;
+		}
+		
+		.sub-text {
+			font-size: 10px;
 		}
 
 		.close-button-overlay {

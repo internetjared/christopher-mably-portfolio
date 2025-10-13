@@ -4,11 +4,10 @@
 
 <header>
   <div class="logo" onclick={() => goto('/')}>
-    <img 
-      src="https://iili.io/KjiTMH7.png" 
-      alt="Mably Logo"
-      style="filter: brightness(0);"
-    />
+    <div class="logo-text">
+      <div class="main-text">Christopher Mably</div>
+      <div class="sub-text">CSC</div>
+    </div>
   </div>
   
   <button class="info-button" onclick={() => goto('/info')}>
@@ -34,14 +33,32 @@
     cursor: pointer;
   }
   
-  .logo img {
-    height: 30px;
+  .logo-text {
+    display: flex;
+    flex-direction: row;
+    align-items: baseline;
+    line-height: 1;
+    gap: 8px;
+  }
+  
+  .main-text {
+    font-size: 18px;
+    font-weight: 600;
+    color: #000;
+    font-family: system-ui, -apple-system, sans-serif;
+  }
+  
+  .sub-text {
+    font-size: 12px;
+    font-weight: 400;
+    color: #000;
+    font-family: system-ui, -apple-system, sans-serif;
   }
   
   .info-button {
     position: absolute;
     left: calc(20px + 89vw); /* Align with video right edge */
-    top: 40px;
+    top: 35px;
     background: transparent;
     border: none;
     padding: 0;
