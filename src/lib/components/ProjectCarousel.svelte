@@ -259,7 +259,7 @@
     display: flex;
     align-items: center;
     justify-content: flex-start; /* Changed from center */
-    padding: 105px 0 60px; /* Increased top padding to 105px to avoid header overlap */
+    padding: 0 0 60px; /* Removed top padding since header is no longer fixed */
   }
   
   .carousel-track {
@@ -422,7 +422,7 @@
   /* Responsive */
   @media (max-width: 768px) {
     .carousel-container {
-      padding: 105px 0 50px; /* Increased top padding to 105px for mobile too */
+      padding: 0 0 50px; /* Removed top padding since header is no longer fixed */
     }
     
     .carousel-track {

@@ -21,6 +21,10 @@
 	let showCredits = $state(false);
 	let isMuted = $state(true);
 	let isInitializing = $state(false);
+	let isFullscreen = $state(false);
+	let isDraggingProgress = $state(false);
+	let hoverTime = $state(0);
+	let showHoverTime = $state(false);
 
 	// Utility function to extract Vimeo video ID
 	function getVimeoVideoId(vimeoUrl: string): string {
@@ -105,11 +109,8 @@
 	});
 
 	function initializePlayer() {
-		console.log('Initializing player for project:', project?._id);
-		
 		// Prevent multiple simultaneous initializations
 		if (isInitializing) {
-			console.log('Already initializing, skipping...');
 			return;
 		}
 		
@@ -139,7 +140,6 @@
 		if (player) {
 			try {
 				player.destroy();
-				console.log('Destroyed old player');
 			} catch (error) {
 				console.warn('Error destroying existing player:', error);
 			}
@@ -148,7 +148,6 @@
 
 		try {
 			player = new (window as any).Vimeo.Player(iframe);
-			console.log('Player created successfully for project:', project._id);
 		} catch (error) {
 			console.error('Error creating Vimeo player:', error);
 			isInitializing = false;
@@ -193,8 +192,6 @@
 
 	// Toggle play/pause
 	function togglePlayPause() {
-		console.log('togglePlayPause called, player:', player, 'isPlaying:', isPlaying);
-		
 		if (!player) {
 			console.warn('Player not initialized yet');
 			return;
@@ -208,9 +205,7 @@
 		
 		try {
 			if (isPlaying) {
-				player.pause().then(() => {
-					console.log('Video paused successfully');
-				}).catch((error: any) => {
+				player.pause().catch((error: any) => {
 					console.error('Error pausing video:', error);
 				});
 				// Clear any existing timeout and keep controls visible when paused
@@ -220,9 +215,7 @@
 				}
 				showControls = true;
 			} else {
-				player.play().then(() => {
-					console.log('Video playing successfully');
-				}).catch((error: any) => {
+				player.play().catch((error: any) => {
 					console.error('Error playing video:', error);
 				});
 			}
@@ -277,19 +270,85 @@
 		}
 	}
 
-	// Handle progress bar click for seeking
-	function handleProgressClick(event: MouseEvent) {
+	// Fullscreen functionality
+	function toggleFullscreen() {
+		const container = document.querySelector('.video-player-container') as HTMLElement;
+		if (!container) return;
+
+		if (!document.fullscreenElement) {
+			container.requestFullscreen().catch((err) => {
+				console.error('Error attempting to enable fullscreen:', err);
+			});
+		} else {
+			document.exitFullscreen();
+		}
+	}
+
+	// Listen for fullscreen changes
+	onMount(() => {
+		const handleFullscreenChange = () => {
+			isFullscreen = !!document.fullscreenElement;
+		};
+
+		document.addEventListener('fullscreenchange', handleFullscreenChange);
+
+		return () => {
+			document.removeEventListener('fullscreenchange', handleFullscreenChange);
+		};
+	});
+
+	// Enhanced progress bar handlers with drag support
+	function handleProgressMouseDown(event: MouseEvent) {
+		if (!player || !duration) return;
+		isDraggingProgress = true;
+		updateProgressFromMouse(event);
+		// Prevent text selection while dragging
+		event.preventDefault();
+	}
+
+	function handleProgressMouseMove(event: MouseEvent) {
 		if (!player || !duration) return;
 		
+		// Update hover time preview
 		const progressBar = event.currentTarget as HTMLElement;
 		const rect = progressBar.getBoundingClientRect();
-		const clickX = event.clientX - rect.left;
-		const percentage = Math.max(0, Math.min(1, clickX / rect.width));
-		const newTime = percentage * duration;
+		const x = event.clientX - rect.left;
+		const percentage = Math.max(0, Math.min(1, x / rect.width));
+		hoverTime = percentage * duration;
+		showHoverTime = true;
 		
-		// Seek to new time - let the animation handle the visual updates
-			player.setCurrentTime(newTime);
+		// Update video position if dragging
+		if (isDraggingProgress) {
+			updateProgressFromMouse(event);
+		}
 	}
+
+	function handleProgressMouseLeave() {
+		showHoverTime = false;
+	}
+
+	function updateProgressFromMouse(event: MouseEvent) {
+		if (!player || !duration) return;
+		const progressBar = event.currentTarget as HTMLElement;
+		const rect = progressBar.getBoundingClientRect();
+		const x = event.clientX - rect.left;
+		const percentage = Math.max(0, Math.min(1, x / rect.width));
+		const newTime = percentage * duration;
+		player.setCurrentTime(newTime);
+	}
+
+	// Global mouse up handler to stop dragging
+	onMount(() => {
+		const handleGlobalMouseUp = () => {
+			isDraggingProgress = false;
+		};
+		
+		window.addEventListener('mouseup', handleGlobalMouseUp);
+		
+		return () => {
+			window.removeEventListener('mouseup', handleGlobalMouseUp);
+		};
+	});
 
 
 	// Ultra-smooth progress animation functions (like Canada Canada)
@@ -378,9 +437,20 @@
 		<div class="time-display">
 			{formatTime(currentTime)} — {formatTime(duration)}
 		</div>
-		<div class="progress-bar" onclick={handleProgressClick}>
+		<div 
+			class="progress-bar" 
+			class:dragging={isDraggingProgress}
+			onmousedown={handleProgressMouseDown}
+			onmousemove={handleProgressMouseMove}
+			onmouseleave={handleProgressMouseLeave}
+		>
 			<div class="progress-fill" style="width: {progress}%"></div>
-	</div>
+			{#if showHoverTime}
+				<div class="hover-time" style="left: {(hoverTime / duration) * 100}%">
+					{formatTime(hoverTime)}
+				</div>
+			{/if}
+		</div>
 		<button class="sound-button" onclick={toggleSound}>
 			{#if isMuted}
 				<!-- Muted Icon -->
@@ -391,6 +461,19 @@
 				<!-- Unmuted Icon -->
 				<svg viewBox="0 0 24 24" fill="currentColor">
 					<path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
+				</svg>
+			{/if}
+		</button>
+		<button class="fullscreen-button" onclick={toggleFullscreen} aria-label="Toggle fullscreen">
+			{#if isFullscreen}
+				<!-- Exit Fullscreen Icon -->
+				<svg viewBox="0 0 24 24" fill="currentColor">
+					<path d="M5 16h3v3h2v-5H5v2zm3-8H5v2h5V5H8v3zm6 11h2v-3h3v-2h-5v5zm2-11V5h-2v5h5V8h-3z"/>
+				</svg>
+			{:else}
+				<!-- Enter Fullscreen Icon -->
+				<svg viewBox="0 0 24 24" fill="currentColor">
+					<path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/>
 				</svg>
 			{/if}
 		</button>
@@ -660,11 +743,22 @@
 		height: 4px;
 		background: rgba(255, 255, 255, 0.3);
 		border-radius: 2px;
-		overflow: hidden;
+		overflow: visible;
 		cursor: pointer;
 		pointer-events: auto;
 		z-index: 51;
 		position: relative;
+		transition: height 0.2s ease, transform 0.2s ease;
+	}
+
+	.progress-bar:hover {
+		height: 8px;
+		transform: translateY(-2px);
+	}
+
+	.progress-bar.dragging {
+		height: 8px;
+		transform: translateY(-2px);
 	}
 
 	.progress-fill {
@@ -673,6 +767,21 @@
 		border-radius: 2px;
 		transition: width 0.05s ease;
 		will-change: width;
+		pointer-events: none;
+	}
+
+	.hover-time {
+		position: absolute;
+		bottom: 12px;
+		transform: translateX(-50%);
+		background: rgba(0, 0, 0, 0.8);
+		color: white;
+		padding: 4px 8px;
+		border-radius: 4px;
+		font-size: 11px;
+		white-space: nowrap;
+		pointer-events: none;
+		z-index: 100;
 	}
 
 	.time-display {
@@ -707,6 +816,33 @@
 	}
 
 	.sound-button svg {
+		width: 16px;
+		height: 16px;
+	}
+
+	.fullscreen-button {
+		background: transparent;
+		border: none;
+		color: white;
+		cursor: pointer;
+		padding: 4px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		transition: opacity 0.2s ease;
+		width: 24px;
+		height: 24px;
+		pointer-events: auto;
+		z-index: 51;
+		position: relative;
+		margin-left: 8px;
+	}
+
+	.fullscreen-button:hover {
+		opacity: 0.7;
+	}
+
+	.fullscreen-button svg {
 		width: 16px;
 		height: 16px;
 	}
@@ -756,6 +892,7 @@
 		display: block;
 		cursor: pointer;
 		transition: opacity 0.2s ease;
+		text-decoration: none;
 	}
 
 	.logo-link:hover {
