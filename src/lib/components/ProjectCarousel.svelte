@@ -119,7 +119,7 @@
 <style>
   .strip-wrapper {
     width: 100%;
-    height: calc(100vh - 80px);
+    height: calc(100vh - 150px);
     overflow: hidden;
     display: flex;
     align-items: center;
@@ -157,8 +157,8 @@
 
   .project-link {
     position: relative;
-    width: 550px;
-    height: 309px; /* 16:9 aspect ratio */
+    width: 520px;
+    height: 293px; /* 16:9 aspect ratio */
     border-radius: 0;
     overflow: hidden;
     cursor: pointer;
@@ -230,8 +230,8 @@
   /* Mobile responsive */
   @media (max-width: 768px) {
     .project-link {
-      width: 350px;
-      height: 197px; /* 16:9 aspect ratio */
+      width: 320px;
+      height: 180px; /* 16:9 aspect ratio */
     }
     
     .project-title {
@@ -245,8 +245,8 @@
 
   @media (max-width: 480px) {
     .project-link {
-      width: 280px;
-      height: 158px; /* 16:9 aspect ratio */
+      width: 256px;
+      height: 144px; /* 16:9 aspect ratio */
     }
     
     .project-title {
