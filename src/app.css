@@ -8,9 +8,9 @@ html, body {
 	margin: 0 !important;
 	padding: 0 !important;
 	width: 100%;
-	height: 100%;
+	height: 100vh;
 	font-family: system-ui, -apple-system, sans-serif;
-	overflow-x: hidden;
+	overflow: hidden;
 }
 
 /* Ensure all elements have no default margins */
@@ -28,59 +28,3 @@ body {
 	outline: 0 !important;
 }
 
-/* Dark mode styles */
-html.dark-mode {
-	background: #000;
-	color: #fff;
-}
-
-html.dark-mode .grid-container {
-	background: #000;
-}
-
-html.dark-mode .project-title {
-	color: #fff;
-}
-
-html.dark-mode .project-client {
-	color: #999;
-}
-
-html.dark-mode header {
-	background: #000;
-}
-
-html.dark-mode .logo .main-text,
-html.dark-mode .logo .sub-text {
-	color: #fff;
-}
-
-html.dark-mode .info-button {
-	color: #fff;
-}
-
-html.dark-mode .toggle-track {
-	background: #333;
-}
-
-html.dark-mode .toggle-thumb {
-	background: #fff;
-}
-
-html.dark-mode .info-container .name {
-	color: #fff;
-}
-
-html.dark-mode .info-container .bio {
-	color: #ccc;
-}
-
-html.dark-mode .info-container .email {
-	color: #fff;
-	border-bottom-color: #fff;
-}
-
-html.dark-mode .image-placeholder {
-	background: #333;
-	color: #999;
-}

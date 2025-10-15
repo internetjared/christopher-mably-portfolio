@@ -1,23 +1,5 @@
 <script lang="ts">
   import { goto } from '$app/navigation';
-  import { onMount } from 'svelte';
-  
-  let { showToggle = false }: { showToggle?: boolean } = $props();
-  let isDarkMode = $state(false);
-  
-  onMount(() => {
-    // Check localStorage for saved preference
-    isDarkMode = localStorage.getItem('darkMode') === 'true';
-    if (isDarkMode) {
-      document.documentElement.classList.add('dark-mode');
-    }
-  });
-  
-  function toggleDarkMode() {
-    isDarkMode = !isDarkMode;
-    localStorage.setItem('darkMode', isDarkMode.toString());
-    document.documentElement.classList.toggle('dark-mode');
-  }
 </script>
 
 <header>
@@ -28,18 +10,9 @@
     </div>
   </button>
   
-  <div class="header-right">
-    {#if showToggle}
-      <button class="dark-mode-toggle" onclick={toggleDarkMode} aria-label="Toggle dark mode">
-        <div class="toggle-track">
-          <div class="toggle-thumb" class:active={isDarkMode}></div>
-        </div>
-      </button>
-    {/if}
-    <button class="info-button" onclick={() => goto('/info')}>
-      Info
-    </button>
-  </div>
+  <button class="info-button" onclick={() => goto('/info')}>
+    Info
+  </button>
 </header>
 
 <style>
@@ -85,49 +58,6 @@
   }
   
 
-  .header-right {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    position: absolute;
-    right: 40px;
-    top: 35px;
-  }
-
-  .dark-mode-toggle {
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    padding: 0;
-  }
-
-  .toggle-track {
-    width: 40px;
-    height: 20px;
-    background: #e0e0e0;
-    border-radius: 10px;
-    position: relative;
-    transition: background 0.3s ease;
-  }
-
-  .toggle-thumb {
-    width: 16px;
-    height: 16px;
-    background: #000;
-    border-radius: 50%;
-    position: absolute;
-    top: 2px;
-    left: 2px;
-    transition: transform 0.3s ease;
-  }
-
-  .toggle-thumb.active {
-    transform: translateX(20px);
-  }
-
-  .dark-mode-toggle:hover .toggle-track {
-    opacity: 0.8;
-  }
 
   .info-button {
     background: transparent;
@@ -146,8 +76,8 @@
 
   /* Mobile responsive */
   @media (max-width: 768px) {
-    .header-right {
-      right: 25px; /* Add padding from right edge for mobile */
+    header {
+      padding: 20px 25px;
     }
   }
 </style>

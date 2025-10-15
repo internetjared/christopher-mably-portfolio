@@ -3,7 +3,10 @@
   import { urlFor } from '$lib/sanity';
   import type { SanityProject } from '$lib/types/sanity';
   
-  let { projects }: { projects: SanityProject[] } = $props();
+  let { projects, speedMultiplier }: { 
+    projects: SanityProject[]; 
+    speedMultiplier: number;
+  } = $props();
   
   // State
   let hoveredProjectIndex = $state<number | null>(null);
@@ -13,78 +16,155 @@
     const match = vimeoUrl.match(/(?:vimeo\.com\/|player\.vimeo\.com\/video\/)(\d+)/);
     return match ? match[1] : '';
   }
+
+  // Computed animation duration
+  const animationDuration = $derived(`${90 / speedMultiplier}s`);
 </script>
 
-<div class="grid-container">
-  {#each projects as project, index}
-    <div class="grid-item-wrapper">
-      <a 
-        href="/project/{project.slug.current}"
-        class="grid-item"
-        onmouseenter={() => hoveredProjectIndex = index}
-        onmouseleave={() => hoveredProjectIndex = null}
-        onclick={() => preloadData(`/project/${project.slug.current}`)}
-      >
-        <!-- Thumbnail Image -->
-        {#if project.thumbnail?.asset}
-          <img 
-            src={urlFor(project.thumbnail).width(800).url()}
-            alt={project.title}
-            class="thumbnail"
-            class:hidden={hoveredProjectIndex === index}
-          />
-        {/if}
+<div class="strip-wrapper">
+  <div 
+    class="strip-container" 
+    class:paused={hoveredProjectIndex !== null}
+    style="animation-duration: {animationDuration};"
+  >
+    <!-- First set of projects for seamless loop -->
+    {#each projects as project, index}
+      <div class="project-item">
+        <a 
+          href="/project/{project.slug.current}"
+          class="project-link"
+          onmouseenter={() => hoveredProjectIndex = index}
+          onmouseleave={() => hoveredProjectIndex = null}
+          onclick={() => preloadData(`/project/${project.slug.current}`)}
+        >
+          <!-- Thumbnail Image -->
+          {#if project.thumbnail?.asset}
+            <img 
+              src={urlFor(project.thumbnail).width(800).url()}
+              alt={project.title}
+              class="thumbnail"
+              class:hidden={hoveredProjectIndex === index}
+            />
+          {/if}
+          
+          <!-- Auto-playing Video (preloaded) -->
+          {#if getVimeoVideoId(project.vimeoUrl)}
+            <iframe
+              src="https://player.vimeo.com/video/{getVimeoVideoId(project.vimeoUrl)}?autoplay=1&muted=1&loop=1&controls=0&background=1"
+              class="video-player"
+              class:visible={hoveredProjectIndex === index}
+              frameborder="0"
+              allow="autoplay"
+              title={project.title}
+            ></iframe>
+          {/if}
+        </a>
         
-        <!-- Auto-playing Video (preloaded) -->
-        {#if getVimeoVideoId(project.vimeoUrl)}
-          <iframe
-            src="https://player.vimeo.com/video/{getVimeoVideoId(project.vimeoUrl)}?autoplay=1&muted=1&loop=1&controls=0&background=1"
-            class="video-player"
-            class:visible={hoveredProjectIndex === index}
-            frameborder="0"
-            allow="autoplay"
-            title={project.title}
-          ></iframe>
-        {/if}
-      </a>
-      
-      <!-- Project Title - Outside the grid item -->
-      <div class="project-title-container">
-        {#if project.client}
-          <div class="project-client">{project.client.toUpperCase()}</div>
-        {/if}
-        <div class="project-title">{project.title}</div>
+        <!-- Project Title - Below thumbnail -->
+        <div class="project-title-container" class:visible={hoveredProjectIndex === index}>
+          {#if project.client}
+            <div class="project-client">{project.client.toUpperCase()}</div>
+          {/if}
+          <div class="project-title">{project.title}</div>
+        </div>
       </div>
-    </div>
-  {/each}
+    {/each}
+    
+    <!-- Second set of projects for seamless loop -->
+    {#each projects as project, index}
+      <div class="project-item">
+        <a 
+          href="/project/{project.slug.current}"
+          class="project-link"
+          onmouseenter={() => hoveredProjectIndex = index + projects.length}
+          onmouseleave={() => hoveredProjectIndex = null}
+          onclick={() => preloadData(`/project/${project.slug.current}`)}
+        >
+          <!-- Thumbnail Image -->
+          {#if project.thumbnail?.asset}
+            <img 
+              src={urlFor(project.thumbnail).width(800).url()}
+              alt={project.title}
+              class="thumbnail"
+              class:hidden={hoveredProjectIndex === index + projects.length}
+            />
+          {/if}
+          
+          <!-- Auto-playing Video (preloaded) -->
+          {#if getVimeoVideoId(project.vimeoUrl)}
+            <iframe
+              src="https://player.vimeo.com/video/{getVimeoVideoId(project.vimeoUrl)}?autoplay=1&muted=1&loop=1&controls=0&background=1"
+              class="video-player"
+              class:visible={hoveredProjectIndex === index + projects.length}
+              frameborder="0"
+              allow="autoplay"
+              title={project.title}
+            ></iframe>
+          {/if}
+        </a>
+        
+        <!-- Project Title - Below thumbnail -->
+        <div class="project-title-container" class:visible={hoveredProjectIndex === index + projects.length}>
+          {#if project.client}
+            <div class="project-client">{project.client.toUpperCase()}</div>
+          {/if}
+          <div class="project-title">{project.title}</div>
+        </div>
+      </div>
+    {/each}
+  </div>
 </div>
 
+
 <style>
-  .grid-container {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-auto-rows: auto;
-    gap: 50px;
-    padding: 20px;
+  .strip-wrapper {
     width: 100%;
-    max-width: 2000px;
-    margin: 0 auto;
+    height: calc(100vh - 80px);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    position: relative;
   }
 
-  .grid-item-wrapper {
+  .strip-container {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    animation: scroll-left 90s linear infinite;
+    width: fit-content;
+  }
+
+  .strip-container.paused {
+    animation-play-state: paused;
+  }
+
+  @keyframes scroll-left {
+    from { 
+      transform: translateX(0); 
+    }
+    to { 
+      transform: translateX(-50%); 
+    }
+  }
+
+  .project-item {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    align-items: center;
+    gap: 15px;
+    flex-shrink: 0;
   }
 
-  .grid-item {
+  .project-link {
     position: relative;
-    border-radius: 10px; /* Same as before */
+    width: 450px;
+    height: 253px; /* 16:9 aspect ratio */
+    border-radius: 0;
     overflow: hidden;
     cursor: pointer;
     text-decoration: none;
     background: #000;
-    aspect-ratio: 16/9; /* 16:9 aspect ratio */
+    display: block;
   }
 
   .thumbnail {
@@ -121,6 +201,13 @@
     display: flex;
     flex-direction: column;
     gap: 4px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    text-align: center;
+  }
+
+  .project-title-container.visible {
+    opacity: 1;
   }
 
   .project-client {
@@ -128,7 +215,6 @@
     font-size: 12px;
     font-weight: 500;
     font-family: system-ui, -apple-system, sans-serif;
-    text-align: left;
     letter-spacing: 1px;
     text-transform: uppercase;
   }
@@ -138,30 +224,38 @@
     font-size: 18px;
     font-weight: 400;
     font-family: system-ui, -apple-system, sans-serif;
-    text-align: left;
     margin: 0;
   }
 
-  /* Mobile: Stack vertically */
+  /* Mobile responsive */
   @media (max-width: 768px) {
-    .grid-container {
-      grid-template-columns: 1fr;
-      grid-template-rows: auto;
-      gap: 15px;
-      height: auto;
-      padding: 15px;
-    }
-    
-    .grid-item-wrapper {
-      gap: 8px;
-    }
-    
-    .grid-item {
-      min-height: 300px;
+    .project-link {
+      width: 300px;
+      height: 169px; /* 16:9 aspect ratio */
     }
     
     .project-title {
       font-size: 16px;
     }
+    
+    .strip-container {
+      gap: 0;
+    }
   }
+
+  @media (max-width: 480px) {
+    .project-link {
+      width: 250px;
+      height: 141px; /* 16:9 aspect ratio */
+    }
+    
+    .project-title {
+      font-size: 14px;
+    }
+    
+    .strip-container {
+      gap: 0;
+    }
+  }
+
 </style>

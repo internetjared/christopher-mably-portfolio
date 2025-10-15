@@ -6,7 +6,7 @@
   <title>Info - Christopher Mably</title>
 </svelte:head>
 
-<Header showToggle={true} />
+	<Header />
 
 <main>
   <div class="info-container">

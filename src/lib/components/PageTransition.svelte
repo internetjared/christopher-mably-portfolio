@@ -18,8 +18,8 @@
 
 <style>
   .page-transition {
-    opacity: 0;
-    transform: translateY(10px);
+    opacity: 1;
+    transform: translateY(0);
     transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1),
                 transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
