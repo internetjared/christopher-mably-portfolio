@@ -17,7 +17,6 @@
 	let animationFrame: number | null = null;
 	let showControls = $state(true);
 	let hideTimeout: ReturnType<typeof setTimeout> | null = null;
-	let showOverview = $state(false);
 	let showCredits = $state(false);
 	let isMuted = $state(true);
 	let isInitializing = $state(false);
@@ -242,18 +241,11 @@
 	}
 
 	// Modal functions
-	function openOverview() {
-		showOverview = true;
-		showCredits = false;
-	}
-
 	function openCredits() {
 		showCredits = true;
-		showOverview = false;
 	}
 
 	function closeModals() {
-		showOverview = false;
 		showCredits = false;
 	}
 
@@ -389,7 +381,7 @@
 	}
 </script>
 
-<div class="video-player-container" class:modal-open={showOverview || showCredits} onmousemove={handleMouseMove}>
+<div class="video-player-container" class:modal-open={showCredits} onmousemove={handleMouseMove}>
 	{#if project?.vimeoUrl}
 		{@const videoId = getVimeoVideoId(project.vimeoUrl)}
 		{#if videoId}
@@ -432,7 +424,6 @@
 			<h1 class="project-title">{project?.title || ''}</h1>
 		</div>
 		<div class="links-container">
-			<button class="link-button" onclick={openOverview}>OVERVIEW</button>
 			<button class="link-button" onclick={openCredits}>CREDITS</button>
 	</div>
 					</div>
@@ -582,27 +573,6 @@
 		</div>
 	{/if}
 
-	<!-- Overview Modal -->
-	{#if showOverview}
-		<div class="modal-overlay" onclick={closeModals}>
-			<div class="modal-content" onclick={(e) => e.stopPropagation()}>
-				<div class="modal-title">{project?.title}</div>
-				<div class="modal-text">
-					{project?.overview || 'No overview available.'}
-				</div>
-				<button class="modal-close-button" onclick={closeModals}>
-					<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-					<path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
-				</svg>
-			</button>
-				<button class="close-button" onclick={closeModals}>
-					<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-					<path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
-				</svg>
-			</button>
-		</div>
-		</div>
-	{/if}
 
 	<!-- Credits Modal -->
 	{#if showCredits}
