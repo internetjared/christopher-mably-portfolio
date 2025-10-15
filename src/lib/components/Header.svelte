@@ -57,6 +57,9 @@
   
 
   .info-button {
+    position: absolute;
+    left: calc(20px + 89vw); /* Align with video right edge */
+    top: 35px;
     background: transparent;
     border: none;
     padding: 0;
@@ -64,11 +67,18 @@
     cursor: pointer;
     color: #000;
     transition: opacity 0.3s ease;
-    line-height: 1;
-    margin-left: auto;
+    transform: translateX(-100%); /* Position from right edge of text */
+    line-height: 1; /* Ensure consistent baseline */
   }
   
   .info-button:hover {
     opacity: 0.7;
+  }
+
+  /* Mobile responsive */
+  @media (max-width: 768px) {
+    .info-button {
+      left: calc(20px + 95vw); /* Match mobile video width */
+    }
   }
 </style>
