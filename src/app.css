@@ -66,3 +66,21 @@ html.dark-mode .toggle-track {
 html.dark-mode .toggle-thumb {
 	background: #fff;
 }
+
+html.dark-mode .info-container .name {
+	color: #fff;
+}
+
+html.dark-mode .info-container .bio {
+	color: #ccc;
+}
+
+html.dark-mode .info-container .email {
+	color: #fff;
+	border-bottom-color: #fff;
+}
+
+html.dark-mode .image-placeholder {
+	background: #333;
+	color: #999;
+}
