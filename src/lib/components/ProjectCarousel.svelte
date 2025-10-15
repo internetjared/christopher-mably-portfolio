@@ -157,8 +157,8 @@
 
   .project-link {
     position: relative;
-    width: 450px;
-    height: 253px; /* 16:9 aspect ratio */
+    width: 550px;
+    height: 309px; /* 16:9 aspect ratio */
     border-radius: 0;
     overflow: hidden;
     cursor: pointer;
@@ -230,8 +230,8 @@
   /* Mobile responsive */
   @media (max-width: 768px) {
     .project-link {
-      width: 300px;
-      height: 169px; /* 16:9 aspect ratio */
+      width: 350px;
+      height: 197px; /* 16:9 aspect ratio */
     }
     
     .project-title {
@@ -245,8 +245,8 @@
 
   @media (max-width: 480px) {
     .project-link {
-      width: 250px;
-      height: 141px; /* 16:9 aspect ratio */
+      width: 280px;
+      height: 158px; /* 16:9 aspect ratio */
     }
     
     .project-title {
