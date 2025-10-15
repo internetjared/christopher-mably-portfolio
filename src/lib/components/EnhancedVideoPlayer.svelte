@@ -425,7 +425,12 @@
 
 	<!-- Project Title and Links -->
 	<div class="title-overlay" class:visible={showControls}>
-		<h1 class="project-title">{project?.title || ''}</h1>
+		<div class="title-container">
+			{#if project?.client}
+				<div class="title-client">{project.client.toUpperCase()}</div>
+			{/if}
+			<h1 class="project-title">{project?.title || ''}</h1>
+		</div>
 		<div class="links-container">
 			<button class="link-button" onclick={openOverview}>OVERVIEW</button>
 			<button class="link-button" onclick={openCredits}>CREDITS</button>
@@ -694,6 +699,23 @@
 
 	.title-overlay.visible {
 		opacity: 1;
+	}
+
+	.title-container {
+		display: flex;
+		flex-direction: column;
+		gap: 4px;
+		align-items: center;
+	}
+
+	.title-client {
+		font-size: 11px;
+		font-weight: 500;
+		color: #ccc;
+		font-family: system-ui, -apple-system, sans-serif;
+		letter-spacing: 1px;
+		text-transform: uppercase;
+		text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
 	}
 
 	.project-title {

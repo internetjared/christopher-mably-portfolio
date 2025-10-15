@@ -27,3 +27,42 @@ body {
 	border: 0 !important;
 	outline: 0 !important;
 }
+
+/* Dark mode styles */
+html.dark-mode {
+	background: #000;
+	color: #fff;
+}
+
+html.dark-mode .grid-container {
+	background: #000;
+}
+
+html.dark-mode .project-title {
+	color: #fff;
+}
+
+html.dark-mode .project-client {
+	color: #999;
+}
+
+html.dark-mode header {
+	background: #000;
+}
+
+html.dark-mode .logo .main-text,
+html.dark-mode .logo .sub-text {
+	color: #fff;
+}
+
+html.dark-mode .info-button {
+	color: #fff;
+}
+
+html.dark-mode .toggle-track {
+	background: #333;
+}
+
+html.dark-mode .toggle-thumb {
+	background: #fff;
+}

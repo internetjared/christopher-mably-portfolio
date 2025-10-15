@@ -12,7 +12,7 @@
 </svelte:head>
 
 <PageTransition>
-	<Header />
+	<Header showToggle={true} />
 
 	<main>
 		<ProjectCarousel projects={data.allProjects} />

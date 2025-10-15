@@ -12,6 +12,13 @@ export const projectSchema = defineType({
       validation: (Rule) => Rule.required().max(100),
     }),
     defineField({
+      name: 'client',
+      title: 'Client',
+      type: 'string',
+      description: 'Optional client name (will display above project title)',
+      validation: (Rule) => Rule.max(100),
+    }),
+    defineField({
       name: 'slug',
       title: 'Slug',
       type: 'slug',

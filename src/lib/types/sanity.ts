@@ -2,6 +2,7 @@
 export interface SanityProject {
   _id: string;
   title: string;
+  client?: string; // Optional client field
   slug: {
     current: string;
   };

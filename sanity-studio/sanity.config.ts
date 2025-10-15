@@ -2,6 +2,7 @@ import { defineConfig } from 'sanity'
 import { structureTool } from 'sanity/structure'
 import { orderableDocumentListDeskItem } from '@sanity/orderable-document-list'
 import { projectSchema } from './schemas/project'
+import { CopyIcon } from '@sanity/icons'
 
 export default defineConfig({
   name: 'christ-mably-cms',
@@ -30,4 +31,5 @@ export default defineConfig({
   schema: {
     types: [projectSchema],
   },
+  
 })
