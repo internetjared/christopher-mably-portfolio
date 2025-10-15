@@ -581,9 +581,15 @@
 	{#if showOverview}
 		<div class="modal-overlay" onclick={closeModals}>
 			<div class="modal-content" onclick={(e) => e.stopPropagation()}>
+				<div class="modal-title">{project?.title}</div>
 				<div class="modal-text">
 					{project?.overview || 'No overview available.'}
 				</div>
+				<button class="modal-close-button" onclick={closeModals}>
+					<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+					<path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+				</svg>
+			</button>
 				<button class="close-button" onclick={closeModals}>
 					<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
 					<path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
@@ -597,9 +603,15 @@
 	{#if showCredits}
 		<div class="modal-overlay" onclick={closeModals}>
 			<div class="modal-content" onclick={(e) => e.stopPropagation()}>
+				<div class="modal-title">{project?.title}</div>
 				<div class="modal-text">
 					{project?.credits || 'No credits available.'}
 			</div>
+				<button class="modal-close-button" onclick={closeModals}>
+					<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+					<path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+				</svg>
+			</button>
 				<button class="close-button" onclick={closeModals}>
 					<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
 					<path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
@@ -1068,6 +1080,16 @@
 		margin: 20px;
 	}
 
+	.modal-title {
+		color: #fff;
+		font-size: 24px;
+		font-weight: 600;
+		font-family: system-ui, -apple-system, sans-serif;
+		text-align: center;
+		margin-bottom: 20px;
+		text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+	}
+
 	.modal-text {
 		color: #fff;
 		font-size: 16px;
@@ -1076,6 +1098,23 @@
 		text-align: center;
 		margin-bottom: 30px;
 		text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+	}
+
+	.modal-close-button {
+		display: block;
+		margin: 0 auto;
+		background: none;
+		border: none;
+		color: #fff;
+		cursor: pointer;
+		padding: 10px;
+		border-radius: 50%;
+		transition: all 0.2s ease;
+		opacity: 0.8;
+	}
+
+	.modal-close-button:hover {
+		opacity: 0.7;
 	}
 
 	.modal-content .close-button {
