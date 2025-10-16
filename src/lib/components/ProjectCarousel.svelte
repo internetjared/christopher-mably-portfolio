@@ -32,14 +32,9 @@
   let stripContainer: HTMLElement;
   
   onMount(() => {
-    // Position strip so Nike and second project are visible on page load
+    // Animation keyframes now handle initial positioning
+    // No need to override transform in JavaScript
     if (stripContainer) {
-      // Calculate offset to show first two projects in viewport
-      // Since strip is centered, we need to offset it to the right
-      // to bring Nike and second project into view
-      const projectWidth = 600; // Approximate width of each project
-      const offset = projectWidth * 1.5; // 1.5 project widths to show Nike and second project
-      stripContainer.style.transform = `translateX(${offset}px)`;
       void stripContainer.offsetWidth;
     }
   });
@@ -257,10 +252,10 @@
 
   @keyframes scroll-left {
     from { 
-      transform: translateX(0); 
+      transform: translateX(20%);  /* Start with Nike visible on left */
     }
     to { 
-      transform: translateX(-33.33%); 
+      transform: translateX(-13.33%);  /* Move one-third minus starting offset */
     }
   }
 
