@@ -89,8 +89,8 @@
 		// Hide controls after 3 seconds of inactivity (only if playing)
 		if (isPlaying) {
 			hideTimeout = setTimeout(() => {
-				showControls = false;
-			}, 3000);
+			showControls = false;
+		}, 2000);
 		}
 
 		return () => {
@@ -235,8 +235,8 @@
 		// Only set timeout to hide if video is playing
 		if (isPlaying) {
 			hideTimeout = setTimeout(() => {
-				showControls = false;
-			}, 3000);
+			showControls = false;
+		}, 2000);
 		}
 	}
 
@@ -416,7 +416,7 @@
 	</div>
 
 	<!-- Project Title and Links -->
-	<div class="title-overlay" class:visible={showControls}>
+	<div class="title-overlay" class:visible={showControls && !showCredits}>
 		<div class="title-container">
 			<h1 class="project-title">{project?.title || ''}</h1>
 	</div>
