@@ -177,10 +177,9 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-start;
+    justify-content: center;
     position: relative;
     gap: 80px;
-    padding-left: 0;
   }
 
   .strip-container {
