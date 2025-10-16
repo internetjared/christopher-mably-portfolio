@@ -22,6 +22,7 @@ const PROJECTS_QUERY = `*[_type == "project"] | order(orderRank asc) {
   _id,
   title,
   client,
+  category,
   slug,
   vimeoUrl,
   thumbnail {
@@ -50,6 +51,7 @@ export async function getProjectBySlug(slug: string) {
       _id,
       title,
       client,
+      category,
       slug,
       vimeoUrl,
       thumbnail {

@@ -19,6 +19,19 @@ export const projectSchema = defineType({
       validation: (Rule) => Rule.max(100),
     }),
     defineField({
+      name: 'category',
+      title: 'Category',
+      type: 'string',
+      options: {
+        list: [
+          { title: 'Commercial', value: 'commercial' },
+          { title: 'Narrative', value: 'narrative' }
+        ],
+        layout: 'radio'
+      },
+      validation: (Rule) => Rule.required()
+    }),
+    defineField({
       name: 'slug',
       title: 'Slug',
       type: 'slug',

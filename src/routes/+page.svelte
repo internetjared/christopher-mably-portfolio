@@ -5,6 +5,27 @@
 	import type { SanityProject } from '$lib/types/sanity';
 
 	let { data }: { data: { allProjects: SanityProject[] } } = $props();
+	
+	// Category filter state
+	let selectedCategory = $state<string | null>(null);
+	
+	// Filter projects based on selected category
+	const filteredProjects = $derived(() => {
+		if (!selectedCategory) {
+			return data.allProjects;
+		}
+		return data.allProjects.filter(project => project.category === selectedCategory);
+	});
+	
+	// Category filter functions
+	function selectCategory(category: string) {
+		if (selectedCategory === category) {
+			// Deselect if clicking the same category
+			selectedCategory = null;
+		} else {
+			selectedCategory = category;
+		}
+	}
 </script>
 
 <svelte:head>
@@ -13,9 +34,28 @@
 
 <PageTransition>
 	<Header isHomepage={true} />
+	
+	<!-- Category Filter -->
+	<div class="category-filter">
+		<button 
+			class="category-button" 
+			class:active={selectedCategory === 'commercial'}
+			onclick={() => selectCategory('commercial')}
+		>
+			COMMERCIAL
+		</button>
+		<span class="separator">|</span>
+		<button 
+			class="category-button" 
+			class:active={selectedCategory === 'narrative'}
+			onclick={() => selectCategory('narrative')}
+		>
+			NARRATIVE
+		</button>
+	</div>
 
 	<main>
-		<ProjectCarousel projects={data.allProjects} />
+		<ProjectCarousel projects={filteredProjects()} />
 	</main>
 </PageTransition>
 
@@ -28,6 +68,45 @@
 	main {
 		height: 100vh;
 		background: #fff;
+	}
+	
+	/* Category Filter */
+	.category-filter {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		gap: 20px;
+		padding: 20px 0;
+		background: #fff;
+	}
+	
+	.category-button {
+		background: transparent;
+		border: none;
+		color: #000;
+		font-size: 12px;
+		font-family: 'Mynaruse', system-ui, -apple-system, sans-serif;
+		font-weight: 100;
+		cursor: pointer;
+		opacity: 0.4;
+		transition: opacity 0.3s ease;
+		text-transform: uppercase;
+	}
+	
+	.category-button:hover {
+		opacity: 0.7;
+	}
+	
+	.category-button.active {
+		opacity: 1;
+	}
+	
+	.separator {
+		color: #000;
+		font-size: 12px;
+		font-family: 'Mynaruse', system-ui, -apple-system, sans-serif;
+		font-weight: 100;
+		opacity: 0.4;
 	}
 	
 	/* Contact Control */
