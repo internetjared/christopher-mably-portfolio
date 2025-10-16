@@ -673,10 +673,10 @@
 	.project-title {
 		color: #fff;
 		font-size: 19.2px;
-		font-weight: 600;
+		font-weight: 300;
+		font-family: 'Mynaruse', system-ui, -apple-system, sans-serif;
 		text-align: center;
 		margin: 0 0 10px 0;
-		font-family: system-ui, -apple-system, sans-serif;
 	}
 
 	.links-container {
@@ -690,12 +690,12 @@
 		border: none;
 		color: #fff;
 		font-size: 9.6px;
-		font-weight: 500;
+		font-weight: 300;
+		font-family: 'Mynaruse', system-ui, -apple-system, sans-serif;
 		letter-spacing: 1px;
 		text-transform: uppercase;
 		cursor: pointer;
 		padding: 8px 12px;
-		font-family: system-ui, -apple-system, sans-serif;
 		transition: opacity 0.2s ease;
 		pointer-events: auto;
 		z-index: 46;
