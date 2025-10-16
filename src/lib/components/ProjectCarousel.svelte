@@ -11,10 +11,17 @@
   
   // State
   let hoveredProjectIndex = $state<number | null>(null);
+  let isDragging = $state(false);
+  let dragStartX = $state(0);
+  let dragCurrentX = $state(0);
+  let dragOffset = $state(0);
+  let velocity = $state(0);
+  let lastDragX = $state(0);
+  let lastDragTime = $state(0);
   
   // Get hovered project data
   const hoveredProject = $derived(() => {
-    if (hoveredProjectIndex === null) return null;
+    if (hoveredProjectIndex === null || isDragging) return null;
     return projects[hoveredProjectIndex % projects.length];
   });
   
@@ -31,11 +38,80 @@
   let stripWrapper: HTMLElement;
   let stripContainer: HTMLElement;
   
+  // Drag handlers
+  function handleDragStart(e: MouseEvent | TouchEvent) {
+    isDragging = true;
+    const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
+    dragStartX = clientX - dragOffset;
+    lastDragX = clientX;
+    lastDragTime = Date.now();
+    velocity = 0;
+    
+    // Disable hover during drag
+    hoveredProjectIndex = null;
+  }
+  
+  function handleDragMove(e: MouseEvent | TouchEvent) {
+    if (!isDragging) return;
+    e.preventDefault();
+    
+    const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
+    dragCurrentX = clientX - dragStartX;
+    dragOffset = dragCurrentX;
+    
+    // Calculate velocity for momentum
+    const now = Date.now();
+    const timeDelta = now - lastDragTime;
+    if (timeDelta > 0) {
+      velocity = (clientX - lastDragX) / timeDelta;
+    }
+    lastDragX = clientX;
+    lastDragTime = now;
+  }
+  
+  function handleDragEnd() {
+    if (!isDragging) return;
+    isDragging = false;
+    
+    // Apply momentum
+    applyMomentum();
+  }
+  
+  function applyMomentum() {
+    const friction = 0.95;
+    const minVelocity = 0.1;
+    
+    function animate() {
+      if (Math.abs(velocity) < minVelocity) {
+        velocity = 0;
+        return;
+      }
+      
+      dragOffset += velocity * 16; // 16ms per frame
+      velocity *= friction;
+      
+      requestAnimationFrame(animate);
+    }
+    
+    if (Math.abs(velocity) >= minVelocity) {
+      requestAnimationFrame(animate);
+    }
+  }
+  
   onMount(() => {
     // No transform override needed - CSS animation handles everything
     if (stripContainer) {
       void stripContainer.offsetWidth;
     }
+    
+    // Global mouse/touch up listeners
+    window.addEventListener('mouseup', handleDragEnd);
+    window.addEventListener('touchend', handleDragEnd);
+    
+    return () => {
+      window.removeEventListener('mouseup', handleDragEnd);
+      window.removeEventListener('touchend', handleDragEnd);
+    };
   });
 </script>
 
@@ -53,11 +129,17 @@
         />
       {/if}
     {/if}
+    <!-- svelte-ignore a11y_no_static_element_interactions -->
     <div 
       bind:this={stripContainer}
       class="strip-container" 
-      class:paused={hoveredProjectIndex !== null}
-      style="animation-duration: {animationDuration};"
+      class:paused={hoveredProjectIndex !== null || isDragging}
+      class:dragging={isDragging}
+      style="animation-duration: {animationDuration}; {isDragging || velocity !== 0 ? `transform: translateX(${dragOffset}px) translateZ(0);` : ''}"
+      onmousedown={handleDragStart}
+      onmousemove={handleDragMove}
+      ontouchstart={handleDragStart}
+      ontouchmove={handleDragMove}
     >
     <!-- First set of projects for seamless loop -->
     {#each projects as project, index}
@@ -191,10 +273,22 @@
     position: relative;
     order: 2;
     will-change: transform;
+    cursor: grab;
+    user-select: none;
+    -webkit-user-select: none;
   }
 
   .strip-container.paused {
     animation-play-state: paused;
+  }
+
+  .strip-container.dragging {
+    cursor: grabbing;
+    animation-play-state: paused;
+  }
+
+  .strip-container.dragging .project-link {
+    pointer-events: none;
   }
 
   /* Still images ordering and spacing */
