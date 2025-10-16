@@ -403,13 +403,14 @@
 		<button class="play-pause-button" onclick={togglePlayPause}>
 			{#if isPlaying}
 				<!-- Pause Icon -->
-				<svg width="38" height="38" viewBox="0 0 24 24" fill="currentColor">
-					<path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z"/>
+				<svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+					<rect x="6" y="4" width="4" height="16" rx="1"/>
+					<rect x="14" y="4" width="4" height="16" rx="1"/>
 				</svg>
 			{:else}
 				<!-- Play Icon -->
-				<svg width="38" height="38" viewBox="0 0 24 24" fill="currentColor">
-					<path d="M8 5v14l11-7z"/>
+				<svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+					<polygon points="8 5, 19 12, 8 19"/>
 				</svg>
 			{/if}
 		</button>
@@ -486,8 +487,8 @@
 	<!-- Close Button (top-right) -->
 	<div class="close-button-overlay" class:visible={showControls}>
 		<a href="/" class="close-button" aria-label="Back to homepage">
-			<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-				<path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+			<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.5" stroke-linecap="round" stroke-linejoin="round">
+				<path d="M18 6L6 18M6 6l12 12"/>
 			</svg>
 		</a>
 			</div>
@@ -500,7 +501,7 @@
 				onclick={() => navigateToProject(getPreviousProject())}
 				aria-label="Previous project"
 			>
-				<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+				<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.5" stroke-linecap="round" stroke-linejoin="round">
 					<path d="M15 18l-6-6 6-6"/>
 				</svg>
 			</button>
@@ -510,7 +511,7 @@
 				onclick={() => navigateToProject(getNextProject())}
 				aria-label="Next project"
 			>
-				<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+				<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.5" stroke-linecap="round" stroke-linejoin="round">
 					<path d="M9 18l6-6-6-6"/>
 				</svg>
 			</button>
@@ -1300,7 +1301,6 @@
 	.thumbnail-container {
 		width: 100%;
 		aspect-ratio: 16/9;
-		border-radius: 10px;
 		overflow: hidden;
 		background: #000;
 		position: relative;
@@ -1322,6 +1322,7 @@
 		color: white;
 		font-size: 12px;
 		text-align: center;
-		font-family: system-ui, -apple-system, sans-serif;
+		font-family: 'Mynaruse', system-ui, -apple-system, sans-serif;
+		font-weight: 300;
 	}
 </style>
