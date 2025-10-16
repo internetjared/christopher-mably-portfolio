@@ -839,7 +839,8 @@
 	.logo-overlay {
 		position: absolute;
 		top: 20px;
-		left: 20px;
+		left: 50%;
+		transform: translateX(-50%);
 		z-index: 70;
 		opacity: 0;
 		transition: opacity 0.3s ease;
@@ -947,7 +948,8 @@
 
 		.logo-overlay {
 			top: 15px;
-			left: 15px;
+			left: 50%;
+			transform: translateX(-50%);
 		}
 
 		.main-text {
@@ -1014,7 +1016,8 @@
 
 		.logo-overlay {
 			top: 10px;
-			left: 10px;
+			left: 50%;
+			transform: translateX(-50%);
 		}
 
 		.main-text {
