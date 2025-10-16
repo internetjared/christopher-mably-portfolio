@@ -221,8 +221,8 @@
   .project-title {
     color: #000;
     font-size: 18px;
-    font-weight: 400;
-    font-family: system-ui, -apple-system, sans-serif;
+    font-weight: 300;
+    font-family: 'Mynaruse', system-ui, -apple-system, sans-serif;
     margin: 0;
   }
 
