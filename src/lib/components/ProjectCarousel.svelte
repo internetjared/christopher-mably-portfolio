@@ -176,8 +176,8 @@
     overflow: hidden;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
+    align-items: flex-start;
+    justify-content: center;
     position: relative;
     gap: 80px;
   }
@@ -191,7 +191,8 @@
     position: relative;
     order: 2;
     will-change: transform;
-    transform: translateX(0) translateZ(0);
+    margin-left: 50vw;
+    transform: translateX(-50%) translateZ(0);
   }
 
   .strip-container.paused {
@@ -209,10 +210,10 @@
 
   @keyframes scroll-left {
     from { 
-      transform: translateX(0);  /* Start with Nike at left edge */
+      transform: translateX(-50%) translateZ(0);  /* Start with Nike at left edge */
     }
     to { 
-      transform: translateX(-50%);  /* Move exactly one set */
+      transform: translateX(calc(-50% - 50%)) translateZ(0);  /* Move exactly one set */
     }
   }
 
