@@ -874,14 +874,14 @@
 
 	.main-text {
 		font-size: 18px;
-		font-weight: 600;
+		font-weight: 300;
 		color: #fff;
 		font-family: 'Mynaruse', system-ui, -apple-system, sans-serif;
 	}
 
 	.sub-text {
 		font-size: 12px;
-		font-weight: 400;
+		font-weight: 100;
 		color: #fff;
 		font-family: 'Mynaruse', system-ui, -apple-system, sans-serif;
 	}
