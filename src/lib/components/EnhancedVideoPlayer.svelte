@@ -1141,25 +1141,6 @@
 		opacity: 0.7;
 	}
 
-	.modal-content .close-button {
-		position: absolute;
-		bottom: -50px;
-		left: 50%;
-		transform: translateX(-50%);
-		background: none;
-		border: none;
-		color: #fff;
-		cursor: pointer;
-		padding: 10px;
-		border-radius: 50%;
-		transition: all 0.2s ease;
-	}
-
-	.modal-content .close-button:hover {
-		background: rgba(255, 255, 255, 0.2);
-		transform: translateX(-50%) scale(1.1);
-	}
-
 	@keyframes fadeIn {
 		from { opacity: 0; }
 		to { opacity: 1; }
