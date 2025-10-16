@@ -252,10 +252,10 @@
 
   @keyframes scroll-left {
     from { 
-      transform: translateX(30%);  /* Increased to show Nike on left */
+      transform: translateX(40%);  /* Further increased to show Nike on left */
     }
     to { 
-      transform: translateX(-3.33%);  /* Adjusted end position: 30% - 33.33% = -3.33% */
+      transform: translateX(6.67%);  /* Adjusted end position: 40% - 33.33% = 6.67% */
     }
   }
 
