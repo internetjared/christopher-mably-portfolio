@@ -38,7 +38,7 @@
       // Since strip is centered, we need to offset it to the right
       // to bring Nike and second project into view
       const projectWidth = 600; // Approximate width of each project
-      const offset = projectWidth * 0.5; // Half a project width to center Nike
+      const offset = projectWidth * 1.5; // 1.5 project widths to show Nike and second project
       stripContainer.style.transform = `translateX(${offset}px)`;
       void stripContainer.offsetWidth;
     }
