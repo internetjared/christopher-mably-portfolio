@@ -11,21 +11,10 @@
   
   // State
   let hoveredProjectIndex = $state<number | null>(null);
-  let isDragging = $state(false);
-  let dragStartX = $state(0);
-  let dragCurrentX = $state(0);
-  let dragOffset = $state(0);
-  let velocity = $state(0);
-  let lastDragX = $state(0);
-  let lastDragTime = $state(0);
-  let animationOffset = $state(0);
-  let dragThreshold = 5; // pixels to move before considering it a drag
-  let hasMoved = $state(false);
-  let clickStartTime = $state(0);
   
   // Get hovered project data
   const hoveredProject = $derived(() => {
-    if (hoveredProjectIndex === null || isDragging) return null;
+    if (hoveredProjectIndex === null) return null;
     return projects[hoveredProjectIndex % projects.length];
   });
   
@@ -42,131 +31,11 @@
   let stripWrapper: HTMLElement;
   let stripContainer: HTMLElement;
   
-  // Drag handlers
-  function handleDragStart(e: MouseEvent | TouchEvent) {
-    e.preventDefault();
-    const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
-    
-    // Reset drag state
-    hasMoved = false;
-    clickStartTime = Date.now();
-    dragStartX = clientX;
-    lastDragX = clientX;
-    lastDragTime = Date.now();
-    velocity = 0;
-    
-    // Capture current animation position
-    if (stripContainer) {
-      const computedStyle = getComputedStyle(stripContainer);
-      const transform = computedStyle.transform;
-      if (transform && transform !== 'none') {
-        const matrix = new DOMMatrix(transform);
-        animationOffset = matrix.m41; // translateX value
-      } else {
-        animationOffset = 0;
-      }
-    }
-    
-    // Disable hover during potential drag
-    hoveredProjectIndex = null;
-  }
-  
-  function handleDragMove(e: MouseEvent | TouchEvent) {
-    if (hasMoved) {
-      // Already dragging, continue
-      if (!isDragging) return;
-      e.preventDefault();
-      
-      const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
-      dragCurrentX = clientX - dragStartX;
-      dragOffset = dragCurrentX;
-      
-      // Calculate velocity for momentum
-      const now = Date.now();
-      const timeDelta = now - lastDragTime;
-      if (timeDelta > 0) {
-        velocity = (clientX - lastDragX) / timeDelta;
-      }
-      lastDragX = clientX;
-      lastDragTime = now;
-    } else {
-      // Check if movement exceeds threshold
-      const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
-      const moveDistance = Math.abs(clientX - dragStartX);
-      
-      if (moveDistance > dragThreshold) {
-        // Start dragging
-        isDragging = true;
-        hasMoved = true;
-        e.preventDefault();
-        
-        dragCurrentX = clientX - dragStartX;
-        dragOffset = dragCurrentX;
-      }
-    }
-  }
-  
-  function handleDragEnd(e: MouseEvent | TouchEvent) {
-    if (isDragging) {
-      // Was dragging, apply momentum
-      isDragging = false;
-      applyMomentum();
-    } else if (hasMoved) {
-      // Moved but didn't exceed threshold, treat as click
-      // Let the link handle navigation
-    } else {
-      // No movement, treat as click
-      // Let the link handle navigation
-    }
-    
-    // Reset state
-    hasMoved = false;
-    isDragging = false;
-  }
-  
-  function applyMomentum() {
-    const friction = 0.95;
-    const minVelocity = 0.1;
-    
-    function animate() {
-      if (Math.abs(velocity) < minVelocity) {
-        velocity = 0;
-        dragOffset = 0; // Reset drag offset
-        return;
-      }
-      
-      dragOffset += velocity * 16; // 16ms per frame
-      velocity *= friction;
-      
-      requestAnimationFrame(animate);
-    }
-    
-    if (Math.abs(velocity) >= minVelocity) {
-      requestAnimationFrame(animate);
-    } else {
-      // No momentum, reset immediately
-      dragOffset = 0;
-    }
-  }
-  
   onMount(() => {
     // No transform override needed - CSS animation handles everything
     if (stripContainer) {
       void stripContainer.offsetWidth;
     }
-    
-    // Global mouse/touch listeners
-    window.addEventListener('mousemove', handleDragMove);
-    window.addEventListener('mouseup', handleDragEnd);
-    window.addEventListener('touchmove', handleDragMove);
-    window.addEventListener('touchend', handleDragEnd);
-    
-    return () => {
-      window.removeEventListener('mousemove', handleDragMove);
-      window.removeEventListener('mouseup', handleDragEnd);
-      window.removeEventListener('touchmove', handleDragMove);
-      window.removeEventListener('touchend', handleDragEnd);
-    };
   });
 </script>
 
@@ -184,15 +53,11 @@
         />
       {/if}
     {/if}
-    <!-- svelte-ignore a11y_no_static_element_interactions -->
     <div 
       bind:this={stripContainer}
       class="strip-container" 
-      class:paused={hoveredProjectIndex !== null || isDragging}
-      class:dragging={isDragging}
-      style="animation-duration: {animationDuration}; {isDragging || velocity !== 0 ? `animation: none; transform: translateX(${animationOffset + dragOffset}px) translateZ(0);` : ''}"
-      onmousedown={handleDragStart}
-      ontouchstart={handleDragStart}
+      class:paused={hoveredProjectIndex !== null}
+      style="animation-duration: {animationDuration};"
     >
     <!-- First set of projects for seamless loop -->
     {#each projects as project, index}
@@ -326,22 +191,10 @@
     position: relative;
     order: 2;
     will-change: transform;
-    cursor: grab;
-    user-select: none;
-    -webkit-user-select: none;
   }
 
   .strip-container.paused {
     animation-play-state: paused;
-  }
-
-  .strip-container.dragging {
-    cursor: grabbing;
-    animation-play-state: paused;
-  }
-
-  .strip-container.dragging .project-link {
-    pointer-events: none;
   }
 
   /* Still images ordering and spacing */
