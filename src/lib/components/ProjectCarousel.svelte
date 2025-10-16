@@ -18,6 +18,10 @@
   let velocity = $state(0);
   let lastDragX = $state(0);
   let lastDragTime = $state(0);
+  let animationOffset = $state(0);
+  let dragThreshold = 5; // pixels to move before considering it a drag
+  let hasMoved = $state(false);
+  let clickStartTime = $state(0);
   
   // Get hovered project data
   const hoveredProject = $derived(() => {
@@ -40,41 +44,84 @@
   
   // Drag handlers
   function handleDragStart(e: MouseEvent | TouchEvent) {
-    isDragging = true;
+    e.preventDefault();
     const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
-    dragStartX = clientX - dragOffset;
+    
+    // Reset drag state
+    hasMoved = false;
+    clickStartTime = Date.now();
+    dragStartX = clientX;
     lastDragX = clientX;
     lastDragTime = Date.now();
     velocity = 0;
     
-    // Disable hover during drag
+    // Capture current animation position
+    if (stripContainer) {
+      const computedStyle = getComputedStyle(stripContainer);
+      const transform = computedStyle.transform;
+      if (transform && transform !== 'none') {
+        const matrix = new DOMMatrix(transform);
+        animationOffset = matrix.m41; // translateX value
+      } else {
+        animationOffset = 0;
+      }
+    }
+    
+    // Disable hover during potential drag
     hoveredProjectIndex = null;
   }
   
   function handleDragMove(e: MouseEvent | TouchEvent) {
-    if (!isDragging) return;
-    e.preventDefault();
-    
-    const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
-    dragCurrentX = clientX - dragStartX;
-    dragOffset = dragCurrentX;
-    
-    // Calculate velocity for momentum
-    const now = Date.now();
-    const timeDelta = now - lastDragTime;
-    if (timeDelta > 0) {
-      velocity = (clientX - lastDragX) / timeDelta;
+    if (hasMoved) {
+      // Already dragging, continue
+      if (!isDragging) return;
+      e.preventDefault();
+      
+      const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
+      dragCurrentX = clientX - dragStartX;
+      dragOffset = dragCurrentX;
+      
+      // Calculate velocity for momentum
+      const now = Date.now();
+      const timeDelta = now - lastDragTime;
+      if (timeDelta > 0) {
+        velocity = (clientX - lastDragX) / timeDelta;
+      }
+      lastDragX = clientX;
+      lastDragTime = now;
+    } else {
+      // Check if movement exceeds threshold
+      const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
+      const moveDistance = Math.abs(clientX - dragStartX);
+      
+      if (moveDistance > dragThreshold) {
+        // Start dragging
+        isDragging = true;
+        hasMoved = true;
+        e.preventDefault();
+        
+        dragCurrentX = clientX - dragStartX;
+        dragOffset = dragCurrentX;
+      }
     }
-    lastDragX = clientX;
-    lastDragTime = now;
   }
   
-  function handleDragEnd() {
-    if (!isDragging) return;
-    isDragging = false;
+  function handleDragEnd(e: MouseEvent | TouchEvent) {
+    if (isDragging) {
+      // Was dragging, apply momentum
+      isDragging = false;
+      applyMomentum();
+    } else if (hasMoved) {
+      // Moved but didn't exceed threshold, treat as click
+      // Let the link handle navigation
+    } else {
+      // No movement, treat as click
+      // Let the link handle navigation
+    }
     
-    // Apply momentum
-    applyMomentum();
+    // Reset state
+    hasMoved = false;
+    isDragging = false;
   }
   
   function applyMomentum() {
@@ -84,6 +131,7 @@
     function animate() {
       if (Math.abs(velocity) < minVelocity) {
         velocity = 0;
+        dragOffset = 0; // Reset drag offset
         return;
       }
       
@@ -95,6 +143,9 @@
     
     if (Math.abs(velocity) >= minVelocity) {
       requestAnimationFrame(animate);
+    } else {
+      // No momentum, reset immediately
+      dragOffset = 0;
     }
   }
   
@@ -104,12 +155,16 @@
       void stripContainer.offsetWidth;
     }
     
-    // Global mouse/touch up listeners
+    // Global mouse/touch listeners
+    window.addEventListener('mousemove', handleDragMove);
     window.addEventListener('mouseup', handleDragEnd);
+    window.addEventListener('touchmove', handleDragMove);
     window.addEventListener('touchend', handleDragEnd);
     
     return () => {
+      window.removeEventListener('mousemove', handleDragMove);
       window.removeEventListener('mouseup', handleDragEnd);
+      window.removeEventListener('touchmove', handleDragMove);
       window.removeEventListener('touchend', handleDragEnd);
     };
   });
@@ -135,11 +190,9 @@
       class="strip-container" 
       class:paused={hoveredProjectIndex !== null || isDragging}
       class:dragging={isDragging}
-      style="animation-duration: {animationDuration}; {isDragging || velocity !== 0 ? `transform: translateX(${dragOffset}px) translateZ(0);` : ''}"
+      style="animation-duration: {animationDuration}; {isDragging || velocity !== 0 ? `animation: none; transform: translateX(${animationOffset + dragOffset}px) translateZ(0);` : ''}"
       onmousedown={handleDragStart}
-      onmousemove={handleDragMove}
       ontouchstart={handleDragStart}
-      ontouchmove={handleDragMove}
     >
     <!-- First set of projects for seamless loop -->
     {#each projects as project, index}
