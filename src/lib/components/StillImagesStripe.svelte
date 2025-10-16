@@ -26,7 +26,19 @@
   class:bottom={position === 'bottom'}
 >
   {#if images && images.length > 0}
-    <div class="stills-container">
+    <div class="stills-container" class:animating={visible}>
+      <!-- First set of images -->
+      {#each images as still}
+        {#if still.asset}
+          <img
+            src={urlFor(still.asset).width(800).url()}
+            alt={still.alt || 'Project still image'}
+            class="still-image"
+            style="width: {imageWidth}px; height: {imageHeight}px;"
+          />
+        {/if}
+      {/each}
+      <!-- Second set for seamless loop -->
       {#each images as still}
         {#if still.asset}
           <img
@@ -69,9 +81,37 @@
   .stills-container {
     display: flex;
     flex-wrap: nowrap;
-    overflow-x: auto;
-    width: 100%;
+    width: fit-content;
     height: 100%;
+    will-change: transform;
+  }
+
+  /* Top stripe scrolls right to left */
+  .stills-stripe.top .stills-container.animating {
+    animation: scroll-left 171s linear infinite;
+  }
+
+  /* Bottom stripe scrolls left to right */
+  .stills-stripe.bottom .stills-container.animating {
+    animation: scroll-right 171s linear infinite;
+  }
+
+  @keyframes scroll-left {
+    0% { 
+      transform: translateX(0) translateZ(0);
+    }
+    100% { 
+      transform: translateX(-50%) translateZ(0);
+    }
+  }
+
+  @keyframes scroll-right {
+    0% { 
+      transform: translateX(-50%) translateZ(0);
+    }
+    100% { 
+      transform: translateX(0) translateZ(0);
+    }
   }
 
   .still-image {
@@ -80,16 +120,6 @@
     display: block;
     will-change: opacity;
     backface-visibility: hidden;
-  }
-
-  /* Hide scrollbar but keep functionality */
-  .stills-container::-webkit-scrollbar {
-    display: none;
-  }
-
-  .stills-container {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
   }
 
   /* Responsive breakpoints */
