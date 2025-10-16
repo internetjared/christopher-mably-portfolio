@@ -873,10 +873,11 @@
 	}
 
 	.main-text {
-		font-size: 18px;
+		font-size: 23px;
 		font-weight: 300;
 		color: #fff;
 		font-family: 'Mynaruse', system-ui, -apple-system, sans-serif;
+		text-transform: uppercase;
 	}
 
 	.sub-text {
