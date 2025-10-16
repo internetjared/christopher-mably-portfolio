@@ -575,11 +575,13 @@
 	{#if showCredits}
 		<div class="modal-overlay" onclick={closeModals}>
 			<div class="modal-content" onclick={(e) => e.stopPropagation()}>
+				<div class="modal-title">{project?.title || ''}</div>
 				<div class="modal-text">
 					{#if project?.credits && project.credits.length > 0}
 						{#each project.credits as credit}
 							<div class="credit-item">
-								<span class="credit-role">{credit.role}:</span>
+								<span class="credit-role">{credit.role.toUpperCase()}</span>
+								<span class="credit-separator">—</span>
 								<span class="credit-name">{credit.name}</span>
 							</div>
 						{/each}
@@ -1078,24 +1080,44 @@
 		text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
 	}
 
+	.modal-title {
+		color: #fff;
+		font-size: 20px;
+		font-weight: 300;
+		font-family: 'Mynaruse', system-ui, -apple-system, sans-serif;
+		text-align: center;
+		margin-bottom: 30px;
+		text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+		text-transform: uppercase;
+	}
+
 	.modal-text {
 		color: #fff;
 		font-size: 16px;
 		line-height: 1.6;
-		font-family: system-ui, -apple-system, sans-serif;
+		font-family: 'Mynaruse', system-ui, -apple-system, sans-serif;
 		text-align: center;
 		margin-bottom: 30px;
 		text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
 	}
 
 	.credit-item {
-		margin-bottom: 12px;
+		margin-bottom: 16px;
 		line-height: 1.8;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 12px;
 	}
 
 	.credit-role {
 		font-weight: 500;
-		margin-right: 8px;
+		text-transform: uppercase;
+	}
+
+	.credit-separator {
+		font-weight: 300;
+		opacity: 0.8;
 	}
 
 	.credit-name {
@@ -1161,6 +1183,10 @@
 			margin: 15px;
 		}
 
+		.modal-title {
+			font-size: 18px;
+		}
+
 		.modal-text {
 			font-size: 14px;
 		}
@@ -1170,6 +1196,10 @@
 		.modal-content {
 			padding: 20px;
 			margin: 10px;
+		}
+
+		.modal-title {
+			font-size: 16px;
 		}
 
 		.modal-text {
