@@ -1,7 +1,6 @@
 <script lang="ts">
 	import ProjectCarousel from '$lib/components/ProjectCarousel.svelte';
 	import Header from '$lib/components/Header.svelte';
-	import PageTransition from '$lib/components/PageTransition.svelte';
 	import type { SanityProject } from '$lib/types/sanity';
 
 	let { data }: { data: { allProjects: SanityProject[] } } = $props();
@@ -32,32 +31,30 @@
 	<title>Christopher Mably Portfolio</title>
 </svelte:head>
 
-<PageTransition>
-	<Header isHomepage={true} />
-	
-	<!-- Category Filter -->
-	<div class="category-filter">
-		<button 
-			class="category-button" 
-			class:active={selectedCategory === 'commercial'}
-			onclick={() => selectCategory('commercial')}
-		>
-			COMMERCIAL
-		</button>
-		<span class="separator">|</span>
-		<button 
-			class="category-button" 
-			class:active={selectedCategory === 'narrative'}
-			onclick={() => selectCategory('narrative')}
-		>
-			NARRATIVE
-		</button>
-	</div>
+<Header isHomepage={true} />
 
-	<main>
-		<ProjectCarousel projects={filteredProjects()} />
-	</main>
-</PageTransition>
+<!-- Category Filter -->
+<div class="category-filter">
+	<button 
+		class="category-button" 
+		class:active={selectedCategory === 'commercial'}
+		onclick={() => selectCategory('commercial')}
+	>
+		COMMERCIAL
+	</button>
+	<span class="separator">|</span>
+	<button 
+		class="category-button" 
+		class:active={selectedCategory === 'narrative'}
+		onclick={() => selectCategory('narrative')}
+	>
+		NARRATIVE
+	</button>
+</div>
+
+<main>
+	<ProjectCarousel projects={filteredProjects()} />
+</main>
 
 <!-- Contact Link -->
 <div class="contact-control">

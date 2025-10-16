@@ -1,6 +1,5 @@
 <script lang="ts">
 	import EnhancedVideoPlayer from '$lib/components/EnhancedVideoPlayer.svelte';
-	import PageTransition from '$lib/components/PageTransition.svelte';
 	import VideoSkeleton from '$lib/components/VideoSkeleton.svelte';
 	import type { SanityProject } from '$lib/types/sanity';
 	
@@ -28,17 +27,15 @@
 	<title>{data.project.title}</title>
 </svelte:head>
 
-<PageTransition>
-	<main>
-		{#if showSkeleton}
-			<VideoSkeleton />
-		{/if}
-		
-		{#key data.project._id}
-			<EnhancedVideoPlayer project={data.project} allProjects={data.allProjects} />
-		{/key}
-	</main>
-</PageTransition>
+<main>
+	{#if showSkeleton}
+		<VideoSkeleton />
+	{/if}
+	
+	{#key data.project._id}
+		<EnhancedVideoPlayer project={data.project} allProjects={data.allProjects} />
+	{/key}
+</main>
 
 <style>
 	main {
