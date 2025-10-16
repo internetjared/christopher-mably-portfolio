@@ -223,6 +223,7 @@
     font-size: 18px;
     font-weight: 300;
     font-family: 'Mynaruse', system-ui, -apple-system, sans-serif;
+    text-transform: uppercase;
     margin: 0;
   }
 
