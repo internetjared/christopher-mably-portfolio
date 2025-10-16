@@ -381,13 +381,14 @@
 	}
 </script>
 
-<div class="video-player-container" class:modal-open={showCredits} onmousemove={handleMouseMove}>
+<div class="video-player-container" class:modal-open={showCredits} onmousemove={handleMouseMove} role="region" aria-label="Video player">
 	{#if project?.vimeoUrl}
 		{@const videoId = getVimeoVideoId(project.vimeoUrl)}
 		{#if videoId}
 		<iframe
 				id="vimeo-player"
 				src="https://player.vimeo.com/video/{videoId}?autoplay=1&muted=1&loop=0&controls=0&background=1"
+				title="{project?.title || 'Video player'}"
 				width="100%"
 				height="100%"
 			frameborder="0"
@@ -437,6 +438,12 @@
 			onmousedown={handleProgressMouseDown}
 			onmousemove={handleProgressMouseMove}
 			onmouseleave={handleProgressMouseLeave}
+			role="slider"
+			aria-label="Video progress"
+			aria-valuemin="0"
+			aria-valuemax="100"
+			aria-valuenow={progress}
+			tabindex="0"
 		>
 			<div class="progress-fill" style="width: {progress}%"></div>
 			{#if showHoverTime}
@@ -523,49 +530,53 @@
 		<div class="nav-thumbnails" class:visible={!isPlaying}>
 			{#if getPreviousProject()}
 				{@const prevProject = getPreviousProject()}
-				{@const prevVideoId = getVimeoVideoId(prevProject.vimeoUrl)}
-				{#if prevVideoId}
-					<div 
-						class="nav-thumbnail nav-thumbnail-left"
-						onclick={() => navigateToProject(prevProject)}
-						role="button"
-						tabindex="0"
-						onkeydown={(e) => e.key === 'Enter' && navigateToProject(prevProject)}
-					>
-						<div class="thumbnail-container">
-							<iframe
-								src="https://player.vimeo.com/video/{prevVideoId}?autoplay=1&muted=1&loop=1&controls=0&background=1"
-								frameborder="0"
-								allow="autoplay"
-								title="{prevProject.title} preview"
-							></iframe>
+				{#if prevProject}
+					{@const prevVideoId = getVimeoVideoId(prevProject.vimeoUrl)}
+					{#if prevVideoId}
+						<div 
+							class="nav-thumbnail nav-thumbnail-left"
+							onclick={() => navigateToProject(prevProject)}
+							role="button"
+							tabindex="0"
+							onkeydown={(e) => e.key === 'Enter' && navigateToProject(prevProject)}
+						>
+							<div class="thumbnail-container">
+								<iframe
+									src="https://player.vimeo.com/video/{prevVideoId}?autoplay=1&muted=1&loop=1&controls=0&background=1"
+									frameborder="0"
+									allow="autoplay"
+									title="{prevProject.title} preview"
+								></iframe>
+							</div>
+							<div class="thumbnail-title">{prevProject.title}</div>
 						</div>
-						<div class="thumbnail-title">{prevProject.title}</div>
-					</div>
+					{/if}
 				{/if}
 			{/if}
 
 			{#if getNextProject()}
 				{@const nextProject = getNextProject()}
-				{@const nextVideoId = getVimeoVideoId(nextProject.vimeoUrl)}
-				{#if nextVideoId}
-					<div 
-						class="nav-thumbnail nav-thumbnail-right"
-						onclick={() => navigateToProject(nextProject)}
+				{#if nextProject}
+					{@const nextVideoId = getVimeoVideoId(nextProject.vimeoUrl)}
+					{#if nextVideoId}
+						<div 
+							class="nav-thumbnail nav-thumbnail-right"
+							onclick={() => navigateToProject(nextProject)}
 							role="button"
 							tabindex="0"
-						onkeydown={(e) => e.key === 'Enter' && navigateToProject(nextProject)}
-					>
-						<div class="thumbnail-container">
-							<iframe
-								src="https://player.vimeo.com/video/{nextVideoId}?autoplay=1&muted=1&loop=1&controls=0&background=1"
-								frameborder="0"
-								allow="autoplay"
-								title="{nextProject.title} preview"
-							></iframe>
+							onkeydown={(e) => e.key === 'Enter' && navigateToProject(nextProject)}
+						>
+							<div class="thumbnail-container">
+								<iframe
+									src="https://player.vimeo.com/video/{nextVideoId}?autoplay=1&muted=1&loop=1&controls=0&background=1"
+									frameborder="0"
+									allow="autoplay"
+									title="{nextProject.title} preview"
+								></iframe>
+							</div>
+							<div class="thumbnail-title">{nextProject.title}</div>
 						</div>
-						<div class="thumbnail-title">{nextProject.title}</div>
-				</div>
+					{/if}
 				{/if}
 			{/if}
 		</div>
@@ -574,9 +585,9 @@
 
 	<!-- Credits Modal -->
 	{#if showCredits}
-		<div class="modal-overlay" onclick={closeModals}>
-			<div class="modal-content" onclick={(e) => e.stopPropagation()}>
-				<div class="modal-title">{project?.title || ''}</div>
+		<div class="modal-overlay" onclick={closeModals} role="dialog" aria-modal="true" aria-labelledby="modal-title" tabindex="-1" onkeydown={(e) => e.key === 'Escape' && closeModals()}>
+			<div class="modal-content">
+				<div class="modal-title" id="modal-title">{project?.title || ''}</div>
 				<div class="modal-text">
 					{#if project?.credits && project.credits.length > 0}
 						{#each project.credits as credit}
@@ -589,8 +600,8 @@
 						No credits available.
 					{/if}
 				</div>
-				<button class="modal-close-button" onclick={closeModals}>
-					<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+				<button class="modal-close-button" onclick={closeModals} aria-label="Close credits modal">
+					<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
 						<path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
 					</svg>
 				</button>
