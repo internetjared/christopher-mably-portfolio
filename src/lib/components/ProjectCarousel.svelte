@@ -24,8 +24,8 @@
     return match ? match[1] : '';
   }
 
-  // Fixed animation duration for 0.6x speed
-  const animationDuration = '200s';
+  // Fixed animation duration for 0.7x speed
+  const animationDuration = '171s';
   
   // Container references
   let stripWrapper: HTMLElement;
