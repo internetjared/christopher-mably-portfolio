@@ -191,8 +191,6 @@
     position: relative;
     order: 2;
     will-change: transform;
-    margin-left: 50vw;
-    transform: translateX(-50%) translateZ(0);
   }
 
   .strip-container.paused {
@@ -209,11 +207,11 @@
   }
 
   @keyframes scroll-left {
-    from { 
-      transform: translateX(-50%) translateZ(0);  /* Start with Nike at left edge */
+    0% { 
+      transform: translateX(0) translateZ(0);  /* Start at 0 */
     }
-    to { 
-      transform: translateX(calc(-50% - 50%)) translateZ(0);  /* Move exactly one set */
+    100% { 
+      transform: translateX(-50%) translateZ(0);  /* Move exactly one set */
     }
   }
 
