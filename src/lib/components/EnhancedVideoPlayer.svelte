@@ -419,11 +419,11 @@
 	<div class="title-overlay" class:visible={showControls}>
 		<div class="title-container">
 			<h1 class="project-title">{project?.title || ''}</h1>
-		</div>
+	</div>
 		<div class="links-container">
 			<button class="link-button" onclick={openCredits}>CREDITS</button>
-		</div>
-	</div>
+					</div>
+				</div>
 
 	<!-- Progress bar with time and sound controls -->
 	<div class="progress-container" class:visible={showControls}>
@@ -441,7 +441,7 @@
 			{#if showHoverTime}
 				<div class="hover-time" style="left: {(hoverTime / duration) * 100}%">
 					{formatTime(hoverTime)}
-	</div>
+			</div>
 			{/if}
 		</div>
 		<button class="sound-button" onclick={toggleSound}>
@@ -672,7 +672,7 @@
 
 	.project-title {
 		color: #fff;
-		font-size: 19.2px;
+		font-size: 24px;
 		font-weight: 300;
 		font-family: 'Mynaruse', system-ui, -apple-system, sans-serif;
 		text-align: center;
@@ -934,7 +934,7 @@
 		}
 
 		.project-title {
-			font-size: 16px;
+			font-size: 20px;
 		}
 
 		.links-container {
@@ -987,7 +987,7 @@
 		}
 
 		.project-title {
-			font-size: 14.4px;
+			font-size: 18px;
 		}
 
 		.links-container {
