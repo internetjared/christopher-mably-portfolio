@@ -45,9 +45,9 @@
 	.contact-link {
 		color: #000;
 		font-size: 12px;
-		font-family: system-ui, -apple-system, sans-serif;
+		font-family: 'Mynaruse', system-ui, -apple-system, sans-serif;
 		text-decoration: none;
-		font-weight: 400;
+		font-weight: 100;
 		transition: opacity 0.3s ease;
 	}
 
