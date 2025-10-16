@@ -580,8 +580,7 @@
 					{#if project?.credits && project.credits.length > 0}
 						{#each project.credits as credit}
 							<div class="credit-item">
-								<span class="credit-role">{credit.role.toUpperCase()}</span>
-								<span class="credit-separator">—</span>
+								<span class="credit-role">{credit.role}</span>
 								<span class="credit-name">{credit.name}</span>
 							</div>
 						{/each}
@@ -1093,35 +1092,35 @@
 
 	.modal-text {
 		color: #fff;
-		font-size: 16px;
-		line-height: 1.6;
+		font-size: 13px;
+		line-height: 1.5;
 		font-family: 'Mynaruse', system-ui, -apple-system, sans-serif;
 		text-align: center;
 		margin-bottom: 30px;
 		text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+		max-height: 60vh;
+		overflow-y: auto;
 	}
 
 	.credit-item {
-		margin-bottom: 16px;
-		line-height: 1.8;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		gap: 12px;
+		margin-bottom: 8px;
+		line-height: 1.6;
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 20px;
+		max-width: 600px;
+		margin-left: auto;
+		margin-right: auto;
 	}
 
 	.credit-role {
-		font-weight: 500;
-		text-transform: uppercase;
-	}
-
-	.credit-separator {
 		font-weight: 300;
-		opacity: 0.8;
+		text-align: right;
 	}
 
 	.credit-name {
 		font-weight: 300;
+		text-align: left;
 	}
 
 	.modal-close-button {
@@ -1188,7 +1187,7 @@
 		}
 
 		.modal-text {
-			font-size: 14px;
+			font-size: 12px;
 		}
 	}
 
@@ -1203,7 +1202,7 @@
 		}
 
 		.modal-text {
-			font-size: 13px;
+			font-size: 11px;
 		}
 	}
 
