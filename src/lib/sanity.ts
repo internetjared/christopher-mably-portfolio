@@ -31,7 +31,15 @@ const PROJECTS_QUERY = `*[_type == "project"] | order(orderRank asc) {
   },
   overview,
   credits,
-  orderRank
+  orderRank,
+  topStills[] {
+    asset->,
+    alt
+  },
+  bottomStills[] {
+    asset->,
+    alt
+  }
 }`;
 
 // Get all projects
@@ -60,7 +68,15 @@ export async function getProjectBySlug(slug: string) {
       },
       overview,
       credits,
-      orderRank
+      orderRank,
+      topStills[] {
+        asset->,
+        alt
+      },
+      bottomStills[] {
+        asset->,
+        alt
+      }
     }`;
     return await sanityClient.fetch(query, { slug });
   } catch (error) {

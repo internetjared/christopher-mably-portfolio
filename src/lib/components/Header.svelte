@@ -60,9 +60,6 @@
     color: #000;
     font-family: 'Mynaruse', system-ui, -apple-system, sans-serif;
   }
-  
-
-
 
   /* Mobile responsive */
   @media (max-width: 768px) {

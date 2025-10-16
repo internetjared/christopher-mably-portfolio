@@ -18,4 +18,18 @@ export interface SanityProject {
   overview?: string;
   credits?: string;
   orderRank?: string;
+  topStills?: Array<{
+    asset: {
+      _ref: string;
+      _type: string;
+    };
+    alt?: string;
+  }>;
+  bottomStills?: Array<{
+    asset: {
+      _ref: string;
+      _type: string;
+    };
+    alt?: string;
+  }>;
 }

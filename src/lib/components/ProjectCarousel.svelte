@@ -1,6 +1,8 @@
 <script lang="ts">
   import { preloadData } from '$app/navigation';
   import { urlFor } from '$lib/sanity';
+  import StillImagesStripe from './StillImagesStripe.svelte';
+  import { onMount } from 'svelte';
   import type { SanityProject } from '$lib/types/sanity';
   
   let { projects }: { 
@@ -10,6 +12,12 @@
   // State
   let hoveredProjectIndex = $state<number | null>(null);
   
+  // Get hovered project data
+  const hoveredProject = $derived(() => {
+    if (hoveredProjectIndex === null) return null;
+    return projects[hoveredProjectIndex % projects.length];
+  });
+  
   // Get Vimeo video ID
   function getVimeoVideoId(vimeoUrl: string): string {
     const match = vimeoUrl.match(/(?:vimeo\.com\/|player\.vimeo\.com\/video\/)(\d+)/);
@@ -18,14 +26,40 @@
 
   // Fixed animation duration for 0.75x speed
   const animationDuration = '120s';
+  
+  // Container references
+  let stripWrapper: HTMLElement;
+  let stripContainer: HTMLElement;
+  
+  onMount(() => {
+    // Ensure strip starts at beginning
+    if (stripContainer) {
+      stripContainer.style.transform = 'translateX(0)';
+      void stripContainer.offsetWidth;
+    }
+  });
 </script>
 
-<div class="strip-wrapper">
-  <div 
-    class="strip-container" 
-    class:paused={hoveredProjectIndex !== null}
-    style="animation-duration: {animationDuration};"
-  >
+<div class="carousel-wrapper">
+  <!-- Film Strip -->
+  <div bind:this={stripWrapper} class="strip-wrapper">
+    <!-- Top Stills Stripe -->
+    {#if hoveredProject()}
+      {@const currentProject = hoveredProject()}
+      {#if currentProject && currentProject.topStills && currentProject.topStills.length > 0}
+        <StillImagesStripe 
+          images={currentProject.topStills} 
+          position="top"
+          visible={hoveredProjectIndex !== null}
+        />
+      {/if}
+    {/if}
+    <div 
+      bind:this={stripContainer}
+      class="strip-container" 
+      class:paused={hoveredProjectIndex !== null}
+      style="animation-duration: {animationDuration};"
+    >
     <!-- First set of projects for seamless loop -->
     {#each projects as project, index}
       <div class="project-item">
@@ -111,19 +145,41 @@
         </a>
       </div>
     {/each}
+    </div>
+    
+    <!-- Bottom Stills Stripe -->
+    {#if hoveredProject()}
+      {@const currentProject = hoveredProject()}
+      {#if currentProject && currentProject.bottomStills && currentProject.bottomStills.length > 0}
+        <StillImagesStripe 
+          images={currentProject.bottomStills} 
+          position="bottom"
+          visible={hoveredProjectIndex !== null}
+        />
+      {/if}
+    {/if}
   </div>
 </div>
 
 
 <style>
+  .carousel-wrapper {
+    position: relative;
+    width: 100%;
+    height: calc(100vh - 150px);
+    container-type: inline-size;
+  }
+
   .strip-wrapper {
     width: 100%;
     height: calc(100vh - 150px);
     overflow: hidden;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     position: relative;
+    gap: 80px;
   }
 
   .strip-container {
@@ -132,12 +188,23 @@
     gap: 0;
     animation: scroll-left 120s linear infinite;
     width: fit-content;
-    position: absolute;
-    left: 0;
+    position: relative;
+    order: 2;
+    will-change: transform;
+    transform: translateX(0) translateZ(0);
   }
 
   .strip-container.paused {
     animation-play-state: paused;
+  }
+
+  /* Still images ordering and spacing */
+  .strip-wrapper :global(.stills-stripe.top) {
+    order: 1;
+  }
+
+  .strip-wrapper :global(.stills-stripe.bottom) {
+    order: 3;
   }
 
   @keyframes scroll-left {
@@ -159,14 +226,15 @@
 
   .project-link {
     position: relative;
-    width: 520px;
-    height: 293px; /* 16:9 aspect ratio */
+    width: clamp(500px, 40vw, 600px);
+    height: clamp(281px, 22.5vw, 338px); /* 16:9 aspect ratio */
     border-radius: 0;
     overflow: hidden;
     cursor: pointer;
     text-decoration: none;
     background: #000;
     display: block;
+    transition: width 0.3s ease, height 0.3s ease;
   }
 
   .thumbnail {
@@ -238,32 +306,29 @@
 
   /* Mobile responsive */
   @media (max-width: 768px) {
+    .strip-wrapper {
+      gap: 40px; /* Reduce gap on mobile */
+    }
+    
     .project-link {
-      width: 320px;
-      height: 180px; /* 16:9 aspect ratio */
+      width: clamp(350px, 50vw, 500px);
+      height: clamp(197px, 28.125vw, 281px); /* 16:9 aspect ratio */
     }
     
     .project-title {
       font-size: 16px;
     }
     
-    .strip-container {
-      gap: 0;
-    }
   }
 
   @media (max-width: 480px) {
     .project-link {
-      width: 256px;
-      height: 144px; /* 16:9 aspect ratio */
+      width: clamp(280px, 60vw, 400px);
+      height: clamp(157px, 33.75vw, 225px);
     }
     
     .project-title {
       font-size: 14px;
-    }
-    
-    .strip-container {
-      gap: 0;
     }
   }
 

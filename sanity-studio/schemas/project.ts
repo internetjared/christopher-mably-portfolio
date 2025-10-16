@@ -104,8 +104,8 @@ export const projectSchema = defineType({
       ],
     }),
     defineField({
-      name: 'stills',
-      title: 'Project Stills',
+      name: 'topStills',
+      title: 'Top Still Images',
       type: 'array',
       of: [
         {
@@ -124,6 +124,30 @@ export const projectSchema = defineType({
           ],
         },
       ],
+      description: 'Images to display above the film strip on hover',
+    }),
+    defineField({
+      name: 'bottomStills',
+      title: 'Bottom Still Images',
+      type: 'array',
+      of: [
+        {
+          type: 'image',
+          options: {
+            hotspot: true,
+          },
+          fields: [
+            {
+              name: 'alt',
+              type: 'string',
+              title: 'Alternative Text',
+              description: 'Important for SEO and accessibility.',
+              validation: (Rule) => Rule.required(),
+            },
+          ],
+        },
+      ],
+      description: 'Images to display below the film strip on hover',
     }),
     defineField({
       name: 'vimeoUrl',
