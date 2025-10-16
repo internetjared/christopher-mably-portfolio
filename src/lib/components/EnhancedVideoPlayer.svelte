@@ -78,12 +78,12 @@
 			initializePlayer();
 		} else {
 			// Load the API script
-			const script = document.createElement('script');
-			script.src = 'https://player.vimeo.com/api/player.js';
-			script.onload = () => {
+		const script = document.createElement('script');
+		script.src = 'https://player.vimeo.com/api/player.js';
+		script.onload = () => {
 				initializePlayer();
-			};
-			document.head.appendChild(script);
+		};
+		document.head.appendChild(script);
 		}
 
 		// Hide controls after 3 seconds of inactivity (only if playing)
@@ -155,8 +155,8 @@
 
 		// Player events
 		player.on('loaded', () => {
-			player.getDuration().then((dur: number) => {
-				duration = dur;
+					player.getDuration().then((dur: number) => {
+						duration = dur;
 			});
 			// Set sound to off by default
 			player.setVolume(0);
@@ -173,18 +173,18 @@
 			lastUpdateTime = data.seconds;
 		});
 
-		player.on('play', () => {
-			isPlaying = true;
-			startSmoothProgress();
-		});
+				player.on('play', () => {
+					isPlaying = true;
+					startSmoothProgress();
+				});
 
-		player.on('pause', () => {
-			isPlaying = false;
-			stopSmoothProgress();
-		});
+				player.on('pause', () => {
+					isPlaying = false;
+					stopSmoothProgress();
+				});
 
-		player.on('ended', () => {
-			isPlaying = false;
+				player.on('ended', () => {
+					isPlaying = false;
 			stopSmoothProgress();
 		});
 	}
@@ -202,23 +202,23 @@
 			return;
 		}
 		
-		try {
-			if (isPlaying) {
-				player.pause().catch((error: any) => {
-					console.error('Error pausing video:', error);
-				});
+			try {
+				if (isPlaying) {
+					player.pause().catch((error: any) => {
+						console.error('Error pausing video:', error);
+					});
 				// Clear any existing timeout and keep controls visible when paused
 				if (hideTimeout) {
 					clearTimeout(hideTimeout);
 					hideTimeout = null;
 				}
 				showControls = true;
-			} else {
-				player.play().catch((error: any) => {
-					console.error('Error playing video:', error);
-				});
-			}
-		} catch (error) {
+				} else {
+					player.play().catch((error: any) => {
+						console.error('Error playing video:', error);
+					});
+				}
+			} catch (error) {
 			console.error('Error toggling play/pause:', error);
 		}
 	}
@@ -420,19 +420,19 @@
 		<div class="title-container">
 			{#if project?.client}
 				<div class="title-client">{project.client.toUpperCase()}</div>
-			{/if}
+	{/if}
 			<h1 class="project-title">{project?.title || ''}</h1>
-		</div>
+			</div>
 		<div class="links-container">
 			<button class="link-button" onclick={openCredits}>CREDITS</button>
+		</div>
 	</div>
-					</div>
 
 	<!-- Progress bar with time and sound controls -->
 	<div class="progress-container" class:visible={showControls}>
 		<div class="time-display">
 			{formatTime(currentTime)} — {formatTime(duration)}
-		</div>
+	</div>
 		<div 
 			class="progress-bar" 
 			class:dragging={isDraggingProgress}
@@ -444,7 +444,7 @@
 			{#if showHoverTime}
 				<div class="hover-time" style="left: {(hoverTime / duration) * 100}%">
 					{formatTime(hoverTime)}
-				</div>
+	</div>
 			{/if}
 		</div>
 		<button class="sound-button" onclick={toggleSound}>
@@ -482,9 +482,9 @@
 			<div class="logo-text">
 				<div class="main-text">Christopher Mably</div>
 				<div class="sub-text">CSC</div>
-			</div>
+				</div>
 		</a>
-	</div>
+		</div>
 
 	<!-- Close Button (top-right) -->
 	<div class="close-button-overlay" class:visible={showControls}>
@@ -493,7 +493,7 @@
 				<path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
 			</svg>
 		</a>
-	</div>
+			</div>
 
 	<!-- Navigation Arrows -->
 	{#if allProjects.length > 1}
@@ -554,8 +554,8 @@
 					<div 
 						class="nav-thumbnail nav-thumbnail-right"
 						onclick={() => navigateToProject(nextProject)}
-						role="button"
-						tabindex="0"
+							role="button"
+							tabindex="0"
 						onkeydown={(e) => e.key === 'Enter' && navigateToProject(nextProject)}
 					>
 						<div class="thumbnail-container">
@@ -567,7 +567,7 @@
 							></iframe>
 						</div>
 						<div class="thumbnail-title">{nextProject.title}</div>
-					</div>
+				</div>
 				{/if}
 			{/if}
 		</div>
@@ -587,7 +587,7 @@
 				</svg>
 			</button>
 		</div>
-	</div>
+		</div>
 	{/if}
 </div>
 
@@ -622,32 +622,32 @@
 		left: 50%;
 		transform: translate(-50%, -50%);
 		z-index: 40;
-		opacity: 0;
-		transition: opacity 0.3s ease;
+	opacity: 0;
+	transition: opacity 0.3s ease;
 		pointer-events: none; /* Changed from auto */
-	}
+}
 
 	.play-pause-overlay.visible {
-		opacity: 1;
+	opacity: 1;
 		pointer-events: auto; /* Enable when visible */
-	}
+}
 
 	.play-pause-button {
 		width: 100px;
 		height: 100px;
-		border: none;
+	border: none;
 		background: transparent;
-		color: white;
-		cursor: pointer;
-		display: flex;
-		align-items: center;
-		justify-content: center;
+	color: white;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	justify-content: center;
 		transition: all 0.2s ease;
-	}
+}
 
 	.play-pause-button:hover {
-		transform: scale(1.1);
-	}
+	transform: scale(1.1);
+}
 
 	/* Project Title */
 	.title-overlay {

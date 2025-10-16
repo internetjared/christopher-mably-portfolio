@@ -57,15 +57,15 @@
               title={project.title}
             ></iframe>
           {/if}
+          
+          <!-- Project Title - Overlay on thumbnail -->
+          <div class="project-title-overlay" class:visible={hoveredProjectIndex === index}>
+            {#if project.client}
+              <div class="project-client">{project.client.toUpperCase()}</div>
+            {/if}
+            <div class="project-title">{project.title}</div>
+          </div>
         </a>
-        
-        <!-- Project Title - Below thumbnail -->
-        <div class="project-title-container" class:visible={hoveredProjectIndex === index}>
-          {#if project.client}
-            <div class="project-client">{project.client.toUpperCase()}</div>
-          {/if}
-          <div class="project-title">{project.title}</div>
-        </div>
       </div>
     {/each}
     
@@ -100,15 +100,15 @@
               title={project.title}
             ></iframe>
           {/if}
+          
+          <!-- Project Title - Overlay on thumbnail -->
+          <div class="project-title-overlay" class:visible={hoveredProjectIndex === index + projects.length}>
+            {#if project.client}
+              <div class="project-client">{project.client.toUpperCase()}</div>
+            {/if}
+            <div class="project-title">{project.title}</div>
+          </div>
         </a>
-        
-        <!-- Project Title - Below thumbnail -->
-        <div class="project-title-container" class:visible={hoveredProjectIndex === index + projects.length}>
-          {#if project.client}
-            <div class="project-client">{project.client.toUpperCase()}</div>
-          {/if}
-          <div class="project-title">{project.title}</div>
-        </div>
       </div>
     {/each}
   </div>
@@ -196,21 +196,27 @@
     opacity: 1;
   }
 
-  .project-title-container {
+  .project-title-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
     display: flex;
     flex-direction: column;
     gap: 4px;
+    padding: 15px;
     opacity: 0;
     transition: opacity 0.3s ease;
     text-align: center;
+    background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
   }
 
-  .project-title-container.visible {
+  .project-title-overlay.visible {
     opacity: 1;
   }
 
   .project-client {
-    color: #666;
+    color: #fff;
     font-size: 12px;
     font-weight: 500;
     font-family: system-ui, -apple-system, sans-serif;
@@ -219,7 +225,7 @@
   }
 
   .project-title {
-    color: #000;
+    color: #fff;
     font-size: 18px;
     font-weight: 300;
     font-family: 'Mynaruse', system-ui, -apple-system, sans-serif;
