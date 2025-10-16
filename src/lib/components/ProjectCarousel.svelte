@@ -122,6 +122,7 @@
     overflow: hidden;
     display: flex;
     align-items: center;
+    justify-content: center;
     position: relative;
   }
 
@@ -129,8 +130,10 @@
     display: flex;
     align-items: center;
     gap: 0;
-    animation: scroll-left 90s linear infinite;
+    animation: scroll-left 120s linear infinite;
     width: fit-content;
+    position: absolute;
+    left: 0;
   }
 
   .strip-container.paused {
