@@ -76,7 +76,7 @@
 		justify-content: center;
 		align-items: center;
 		gap: 20px;
-		padding: 20px 0;
+		padding: 10px 0;
 		background: #fff;
 	}
 	
@@ -86,7 +86,7 @@
 		color: #000;
 		font-size: 12px;
 		font-family: 'Mynaruse', system-ui, -apple-system, sans-serif;
-		font-weight: 100;
+		font-weight: 300;
 		cursor: pointer;
 		opacity: 0.4;
 		transition: opacity 0.3s ease;
@@ -105,7 +105,7 @@
 		color: #000;
 		font-size: 12px;
 		font-family: 'Mynaruse', system-ui, -apple-system, sans-serif;
-		font-weight: 100;
+		font-weight: 300;
 		opacity: 0.4;
 	}
 	
