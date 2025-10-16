@@ -576,14 +576,23 @@
 		<div class="modal-overlay" onclick={closeModals}>
 			<div class="modal-content" onclick={(e) => e.stopPropagation()}>
 				<div class="modal-text">
-					{project?.credits || 'No credits available.'}
-			</div>
+					{#if project?.credits && project.credits.length > 0}
+						{#each project.credits as credit}
+							<div class="credit-item">
+								<span class="credit-role">{credit.role}:</span>
+								<span class="credit-name">{credit.name}</span>
+							</div>
+						{/each}
+					{:else}
+						No credits available.
+					{/if}
+				</div>
 				<button class="modal-close-button" onclick={closeModals}>
 					<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-					<path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
-				</svg>
-			</button>
-		</div>
+						<path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+					</svg>
+				</button>
+			</div>
 		</div>
 	{/if}
 </div>
@@ -1077,6 +1086,20 @@
 		text-align: center;
 		margin-bottom: 30px;
 		text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+	}
+
+	.credit-item {
+		margin-bottom: 12px;
+		line-height: 1.8;
+	}
+
+	.credit-role {
+		font-weight: 500;
+		margin-right: 8px;
+	}
+
+	.credit-name {
+		font-weight: 300;
 	}
 
 	.modal-close-button {

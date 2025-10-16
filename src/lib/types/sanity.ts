@@ -16,7 +16,10 @@ export interface SanityProject {
     alt?: string;
   };
   overview?: string;
-  credits?: string;
+  credits?: Array<{
+    role: string;
+    name: string;
+  }>;
   orderRank?: string;
   topStills?: Array<{
     asset: {
