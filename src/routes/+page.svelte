@@ -76,7 +76,7 @@
 		justify-content: center;
 		align-items: center;
 		gap: 20px;
-		padding: 10px 0;
+		padding: 5px 0;
 		background: #fff;
 	}
 	
