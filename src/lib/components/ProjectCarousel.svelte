@@ -93,10 +93,10 @@
           
           <!-- Project Title - Overlay on thumbnail -->
           <div class="project-title-overlay" class:visible={hoveredProjectIndex === index}>
-            {#if project.client}
-              <div class="project-client">{project.client.toUpperCase()}</div>
-            {/if}
             <div class="project-title">{project.title}</div>
+            {#if project.secondaryThumbnailText}
+              <div class="project-secondary-text">{project.secondaryThumbnailText}</div>
+            {/if}
           </div>
         </a>
       </div>
@@ -136,10 +136,10 @@
           
           <!-- Project Title - Overlay on thumbnail -->
           <div class="project-title-overlay" class:visible={hoveredProjectIndex === index + projects.length}>
-            {#if project.client}
-              <div class="project-client">{project.client.toUpperCase()}</div>
-            {/if}
             <div class="project-title">{project.title}</div>
+            {#if project.secondaryThumbnailText}
+              <div class="project-secondary-text">{project.secondaryThumbnailText}</div>
+            {/if}
           </div>
         </a>
       </div>
@@ -285,13 +285,12 @@
     opacity: 1;
   }
 
-  .project-client {
+  .project-secondary-text {
     color: #fff;
-    font-size: 12px;
-    font-weight: 500;
-    font-family: system-ui, -apple-system, sans-serif;
-    letter-spacing: 1px;
-    text-transform: uppercase;
+    font-size: 14px;
+    font-weight: 300;
+    font-family: 'Mynaruse', system-ui, -apple-system, sans-serif;
+    margin-top: 4px;
   }
 
   .project-title {

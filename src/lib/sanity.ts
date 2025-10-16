@@ -21,7 +21,7 @@ export function urlFor(source: any) {
 const PROJECTS_QUERY = `*[_type == "project"] | order(orderRank asc) {
   _id,
   title,
-  client,
+    secondaryThumbnailText,
   category,
   slug,
   vimeoUrl,
@@ -58,7 +58,7 @@ export async function getProjectBySlug(slug: string) {
     const query = `*[_type == "project" && slug.current == $slug][0] {
       _id,
       title,
-      client,
+      secondaryThumbnailText,
       category,
       slug,
       vimeoUrl,

@@ -12,10 +12,10 @@ export const projectSchema = defineType({
       validation: (Rule) => Rule.required().max(100),
     }),
     defineField({
-      name: 'client',
-      title: 'Client',
+      name: 'secondaryThumbnailText',
+      title: 'Secondary Thumbnail Text',
       type: 'string',
-      description: 'Optional client name (will display above project title)',
+      description: 'Optional text that appears below the project title on homepage hover thumbnails',
       validation: (Rule) => Rule.max(100),
     }),
     defineField({
