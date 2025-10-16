@@ -32,9 +32,14 @@
   let stripContainer: HTMLElement;
   
   onMount(() => {
-    // Ensure strip starts at beginning
+    // Position strip so Nike and second project are visible on page load
     if (stripContainer) {
-      stripContainer.style.transform = 'translateX(0)';
+      // Calculate offset to show first two projects in viewport
+      // Since strip is centered, we need to offset it to the right
+      // to bring Nike and second project into view
+      const projectWidth = 600; // Approximate width of each project
+      const offset = projectWidth * 0.5; // Half a project width to center Nike
+      stripContainer.style.transform = `translateX(${offset}px)`;
       void stripContainer.offsetWidth;
     }
   });
