@@ -32,8 +32,7 @@
   let stripContainer: HTMLElement;
   
   onMount(() => {
-    // Animation keyframes now handle initial positioning
-    // No need to override transform in JavaScript
+    // No transform override needed - CSS animation handles everything
     if (stripContainer) {
       void stripContainer.offsetWidth;
     }
@@ -146,48 +145,6 @@
       </div>
     {/each}
     
-    <!-- Third set of projects for buffer to eliminate white space -->
-    {#each projects as project, index}
-      <div class="project-item">
-        <a 
-          href="/project/{project.slug.current}"
-          class="project-link"
-          onmouseenter={() => hoveredProjectIndex = index + (projects.length * 2)}
-          onmouseleave={() => hoveredProjectIndex = null}
-          onclick={() => preloadData(`/project/${project.slug.current}`)}
-        >
-          <!-- Thumbnail Image -->
-          {#if project.thumbnail?.asset}
-            <img 
-              src={urlFor(project.thumbnail).width(800).url()}
-              alt={project.title}
-              class="thumbnail"
-              class:hidden={hoveredProjectIndex === index + (projects.length * 2)}
-            />
-          {/if}
-          
-          <!-- Auto-playing Video (preloaded) -->
-          {#if getVimeoVideoId(project.vimeoUrl)}
-            <iframe
-              src="https://player.vimeo.com/video/{getVimeoVideoId(project.vimeoUrl)}?autoplay=1&muted=1&loop=1&controls=0&background=1"
-              class="video-player"
-              class:visible={hoveredProjectIndex === index + (projects.length * 2)}
-              frameborder="0"
-              allow="autoplay"
-              title={project.title}
-            ></iframe>
-          {/if}
-          
-          <!-- Project Title - Overlay on thumbnail -->
-          <div class="project-title-overlay" class:visible={hoveredProjectIndex === index + (projects.length * 2)}>
-            {#if project.client}
-              <div class="project-client">{project.client.toUpperCase()}</div>
-            {/if}
-            <div class="project-title">{project.title}</div>
-          </div>
-        </a>
-      </div>
-    {/each}
     </div>
     
     <!-- Bottom Stills Stripe -->
@@ -220,7 +177,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     position: relative;
     gap: 80px;
   }
@@ -252,10 +209,10 @@
 
   @keyframes scroll-left {
     from { 
-      transform: translateX(45%);  /* Reduced to eliminate white space on left */
+      transform: translateX(0);  /* Start with Nike at left edge */
     }
     to { 
-      transform: translateX(11.67%);  /* Adjusted end position: 45% - 33.33% = 11.67% */
+      transform: translateX(-50%);  /* Move exactly one set */
     }
   }
 
