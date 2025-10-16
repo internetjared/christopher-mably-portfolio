@@ -869,20 +869,21 @@
 		align-items: baseline;
 		line-height: 1;
 		gap: 8px;
+		font-family: 'Mynaruse', system-ui, -apple-system, sans-serif;
 	}
 
 	.main-text {
 		font-size: 18px;
 		font-weight: 600;
 		color: #fff;
-		font-family: system-ui, -apple-system, sans-serif;
+		font-family: 'Mynaruse', system-ui, -apple-system, sans-serif;
 	}
 
 	.sub-text {
 		font-size: 12px;
 		font-weight: 400;
 		color: #fff;
-		font-family: system-ui, -apple-system, sans-serif;
+		font-family: 'Mynaruse', system-ui, -apple-system, sans-serif;
 	}
 
 	/* Logo Link */

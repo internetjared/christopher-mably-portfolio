@@ -1,8 +1,10 @@
 <script lang="ts">
   import { goto } from '$app/navigation';
+  
+  let { isHomepage = false }: { isHomepage?: boolean } = $props();
 </script>
 
-<header>
+<header class:homepage={isHomepage}>
   <button class="logo" onclick={() => goto('/')} aria-label="Go to homepage">
     <div class="logo-text">
       <div class="main-text">Christopher Mably</div>
@@ -10,22 +12,23 @@
     </div>
   </button>
   
-  <button class="info-button" onclick={() => goto('/info')}>
-    Info
-  </button>
 </header>
 
 <style>
   header {
     position: relative;
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
     align-items: center;
     padding: 30px 40px;
     z-index: 100;
     background: #fff;
     max-width: 2000px;
     margin: 0 auto;
+  }
+  
+  header.homepage {
+    justify-content: center;
   }
   
   .logo {
@@ -47,32 +50,18 @@
     font-size: 18px;
     font-weight: 600;
     color: #000;
-    font-family: system-ui, -apple-system, sans-serif;
+    font-family: 'Mynaruse', system-ui, -apple-system, sans-serif;
   }
   
   .sub-text {
     font-size: 12px;
     font-weight: 400;
     color: #000;
-    font-family: system-ui, -apple-system, sans-serif;
+    font-family: 'Mynaruse', system-ui, -apple-system, sans-serif;
   }
   
 
 
-  .info-button {
-    background: transparent;
-    border: none;
-    padding: 0;
-    font-size: 14px;
-    cursor: pointer;
-    color: #000;
-    transition: opacity 0.3s ease;
-    line-height: 1; /* Ensure consistent baseline */
-  }
-  
-  .info-button:hover {
-    opacity: 0.7;
-  }
 
   /* Mobile responsive */
   @media (max-width: 768px) {

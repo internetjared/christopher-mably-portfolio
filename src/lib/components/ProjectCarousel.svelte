@@ -3,9 +3,8 @@
   import { urlFor } from '$lib/sanity';
   import type { SanityProject } from '$lib/types/sanity';
   
-  let { projects, speedMultiplier }: { 
+  let { projects }: { 
     projects: SanityProject[]; 
-    speedMultiplier: number;
   } = $props();
   
   // State
@@ -17,8 +16,8 @@
     return match ? match[1] : '';
   }
 
-  // Computed animation duration
-  const animationDuration = $derived(`${90 / speedMultiplier}s`);
+  // Fixed animation duration for 0.75x speed
+  const animationDuration = '120s';
 </script>
 
 <div class="strip-wrapper">

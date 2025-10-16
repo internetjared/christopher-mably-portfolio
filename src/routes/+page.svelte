@@ -2,26 +2,9 @@
 	import ProjectCarousel from '$lib/components/ProjectCarousel.svelte';
 	import Header from '$lib/components/Header.svelte';
 	import PageTransition from '$lib/components/PageTransition.svelte';
-	import { onMount } from 'svelte';
 	import type { SanityProject } from '$lib/types/sanity';
 
 	let { data }: { data: { allProjects: SanityProject[] } } = $props();
-	
-	// Speed control state
-	let speedMultiplier = $state(1);
-	
-	// Speed control functions
-	function updateSpeed(newSpeed: number) {
-		speedMultiplier = newSpeed;
-		localStorage.setItem('scrollSpeed', newSpeed.toString());
-	}
-
-	onMount(() => {
-		const savedSpeed = localStorage.getItem('scrollSpeed');
-		if (savedSpeed) {
-			speedMultiplier = parseFloat(savedSpeed);
-		}
-	});
 </script>
 
 <svelte:head>
@@ -29,43 +12,16 @@
 </svelte:head>
 
 <PageTransition>
-	<Header />
+	<Header isHomepage={true} />
 
 	<main>
-		<ProjectCarousel projects={data.allProjects} speedMultiplier={speedMultiplier} />
+		<ProjectCarousel projects={data.allProjects} />
 	</main>
 </PageTransition>
 
-<!-- Speed Control -->
-<div class="speed-control">
-	<button 
-		class="speed-option" 
-		class:active={speedMultiplier === 1}
-		onclick={() => updateSpeed(1)}
-	>
-		1x
-	</button>
-	<button 
-		class="speed-option" 
-		class:active={speedMultiplier === 2}
-		onclick={() => updateSpeed(2)}
-	>
-		2x
-	</button>
-	<button 
-		class="speed-option" 
-		class:active={speedMultiplier === 3}
-		onclick={() => updateSpeed(3)}
-	>
-		3x
-	</button>
-	<button 
-		class="speed-option" 
-		class:active={speedMultiplier === 4}
-		onclick={() => updateSpeed(4)}
-	>
-		4x
-	</button>
+<!-- Contact Link -->
+<div class="contact-control">
+	<a href="/info" class="contact-link">CONTACT</a>
 </div>
 
 <style>
@@ -74,61 +30,48 @@
 		background: #fff;
 	}
 	
-	/* Speed Control */
-	.speed-control {
+	/* Contact Control */
+	.contact-control {
 		position: fixed;
 		bottom: 20px;
 		left: 50%;
 		transform: translateX(-50%);
 		z-index: 9999;
-		display: flex;
-		gap: 10px;
 		background: rgba(255, 255, 255, 0.8);
 		padding: 6px 12px;
 		border-radius: 5px;
 	}
 
-	.speed-option {
-		background: transparent;
-		border: none;
+	.contact-link {
 		color: #000;
 		font-size: 12px;
 		font-family: system-ui, -apple-system, sans-serif;
-		cursor: pointer;
-		opacity: 0.3;
-		transition: opacity 0.3s ease;
-		padding: 3px 6px;
+		text-decoration: none;
 		font-weight: 400;
+		transition: opacity 0.3s ease;
 	}
 
-	.speed-option:hover {
+	.contact-link:hover {
 		opacity: 0.6;
-	}
-
-	.speed-option.active {
-		opacity: 1;
-		font-weight: 500;
 	}
 
 	/* Mobile responsive */
 	@media (max-width: 768px) {
-		.speed-control {
+		.contact-control {
 			bottom: 15px;
-			gap: 10px;
 		}
 		
-		.speed-option {
+		.contact-link {
 			font-size: 12px;
 		}
 	}
 
 	@media (max-width: 480px) {
-		.speed-control {
+		.contact-control {
 			bottom: 10px;
-			gap: 8px;
 		}
 		
-		.speed-option {
+		.contact-link {
 			font-size: 11px;
 		}
 	}
