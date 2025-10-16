@@ -860,7 +860,7 @@
 	/* Logo */
 	.logo-overlay {
 		position: absolute;
-		top: 20px;
+		top: 30px;
 		left: 50%;
 		transform: translateX(-50%);
 		z-index: 70;
@@ -969,21 +969,13 @@
 
 
 		.logo-overlay {
-			top: 15px;
+			top: 20px;
 			left: 50%;
 			transform: translateX(-50%);
 		}
 
-		.main-text {
-			font-size: 16px;
-		}
-		
-		.sub-text {
-			font-size: 11px;
-		}
-
 		.close-button-overlay {
-			top: 15px; /* Match logo position on mobile */
+			top: 15px;
 		}
 
 		.progress-container {
@@ -1037,21 +1029,13 @@
 
 
 		.logo-overlay {
-			top: 10px;
+			top: 20px;
 			left: 50%;
 			transform: translateX(-50%);
 		}
 
-		.main-text {
-			font-size: 14px;
-		}
-		
-		.sub-text {
-			font-size: 10px;
-		}
-
 		.close-button-overlay {
-			top: 10px; /* Match logo position on smaller screens */
+			top: 10px;
 		}
 	}
 
