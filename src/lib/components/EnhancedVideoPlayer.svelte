@@ -403,13 +403,13 @@
 		<button class="play-pause-button" onclick={togglePlayPause}>
 			{#if isPlaying}
 				<!-- Pause Icon -->
-				<svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-					<rect x="6" y="4" width="4" height="16" rx="1"/>
-					<rect x="14" y="4" width="4" height="16" rx="1"/>
+				<svg width="76" height="76" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.5" stroke-linecap="round" stroke-linejoin="round">
+					<rect x="6" y="4" width="4" height="16"/>
+					<rect x="14" y="4" width="4" height="16"/>
 				</svg>
 			{:else}
 				<!-- Play Icon -->
-				<svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+				<svg width="76" height="76" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.5" stroke-linecap="round" stroke-linejoin="round">
 					<polygon points="8 5, 19 12, 8 19"/>
 				</svg>
 			{/if}
